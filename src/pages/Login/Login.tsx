@@ -1,10 +1,69 @@
 import { useState } from 'react'
 import logo from '../../assets/logo.svg'
 import loginIllustration from '../../assets/login.svg'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { LoginInputSchema, type LoginInput } from '../../schemas/user.schema'
+import Button from '../../components/Button'
+import { useMutation } from '@tanstack/react-query'
+import authApi from '../../apis/auth.api'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/app.context'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
+  const { setTokens, setProfile } = useAuth()
+  const navigate = useNavigate()
+  const {
+    register,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<LoginInput>({ resolver: zodResolver(LoginInputSchema) }) // return register, handleSubmit, formState: {errors}
 
+  const loginMutation = useMutation({
+    mutationFn: (body: LoginInput) => authApi.login(body)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    loginMutation.mutate(data, {
+      onSuccess: (res) => {
+        const { accessToken, refreshToken, user } = res.data
+
+        // Validate role trước khi trả token đăng nhập
+        if (!user.role || user.role === 'customer') {
+          toast.error('Tài khoản không có quyền truy cập hệ thống này')
+          return
+        }
+
+        // profile
+        setProfile(user)
+        setTokens(accessToken, refreshToken)
+
+        //toast
+        const roleMessages: Record<string, string> = {
+          admin: '👑 Đăng nhập với quyền Quản trị viên',
+          shipper: '🚚 Đăng nhập với quyền Nhân viên vận chuyển',
+          support: '💬 Đăng nhập với quyền Nhân viên cửa hàng'
+        }
+
+        toast.success(roleMessages[user.role])
+        navigate('/dashboard')
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (error: any) => {
+        const message = error?.response?.data?.message
+        if (typeof message === 'string') {
+          toast.error(message)
+          setError('email', { type: 'Server', message })
+          return
+        }
+
+        toast.error('Đăng nhập thất bại')
+      }
+    })
+  })
   return (
     <main
       className='min-h-screen p-3 sm:p-5 lg:p-6'
@@ -26,7 +85,7 @@ export default function Login() {
               </h1>
             </div>
 
-            <form className='flex flex-col gap-3' onSubmit={(event) => event.preventDefault()}>
+            <form className='flex flex-col gap-3' onSubmit={onSubmit} noValidate>
               <label className='text-[0.95rem] font-medium text-[#5f5f6e]' htmlFor='email'>
                 Email
               </label>
@@ -36,7 +95,9 @@ export default function Login() {
                 type='email'
                 placeholder='Nhập email đăng nhập'
                 autoComplete='email'
+                {...register('email')}
               />
+              <div className='mt-1 text-red-600 min-h-4 text-sm'>{errors.email?.message}</div>
 
               <div className='mt-1 flex items-center justify-between'>
                 <label className='text-[0.95rem] font-medium text-[#5f5f6e]' htmlFor='password'>
@@ -50,10 +111,12 @@ export default function Login() {
                 <input
                   id='password'
                   placeholder='Nhập mật khẩu'
+                  {...register('password')}
                   className='h-[42px] w-full rounded border border-[#F7D9C7] bg-[#FFF6F0] px-3 pr-10 text-[#373748] outline-none transition focus:border-[#F47458] focus:shadow-[0_0_0_3px_rgba(244,116,88,0.18)]'
                   type={showPassword ? 'text' : 'password'}
                   autoComplete='current-password'
                 />
+
                 <button
                   type='button'
                   onClick={() => setShowPassword((value) => !value)}
@@ -75,14 +138,17 @@ export default function Login() {
                   )}
                 </button>
               </div>
-
-              <button
-                className='mt-7 inline-flex w-fit min-w-[126px] cursor-pointer items-center justify-center gap-2.5 rounded-full border-0 bg-gradient-to-r from-[#F68A6F] to-[#F47458] px-[14px] py-[11px] text-sm font-bold tracking-[0.04em] text-white transition hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(244,116,88,0.35)]'
+              <div className='mt-1 text-red-600 min-h-4 text-sm'>{errors.password?.message}</div>
+              {/* Submit */}
+              <Button
                 type='submit'
+                className='w-full h-11 flex items-center justify-center rounded-md bg-indigo-400 hover:bg-indigo-700
+                     text-white font-semibold transition'
+                isLoading={loginMutation.isPending}
+                disabled={loginMutation.isPending}
               >
-                <span>SIGN IN</span>
-                <span className='text-base leading-none'>-&gt;</span>
-              </button>
+                Đăng nhập
+              </Button>
             </form>
           </div>
         </div>

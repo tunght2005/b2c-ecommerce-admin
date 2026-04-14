@@ -26,6 +26,7 @@ export default function Header() {
   })
 
   const displayName = profile?.username || email || 'User'
+  const avatarUrl = profile?.avatar || ''
   const initials = displayName
     .split(' ')
     .filter(Boolean)
@@ -80,9 +81,13 @@ export default function Header() {
               type='button'
               className='flex items-center gap-2 rounded-full border border-[#ebe9fa] bg-white px-3 py-1.5 text-left transition hover:border-[#d9d5f4]'
             >
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-[#ffb1a1] to-[#f47458] text-xs font-semibold text-white'>
-                {initials || 'US'}
-              </div>
+              {avatarUrl ? (
+                <img src={avatarUrl} alt='Avatar' className='h-8 w-8 rounded-full object-cover' />
+              ) : (
+                <div className='flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-[#ffb1a1] to-[#f47458] text-xs font-semibold text-white'>
+                  {initials || 'US'}
+                </div>
+              )}
               <span className='hidden text-sm font-medium text-[#5f5b7f] sm:inline'>
                 {displayName}
                 {role ? ` (${role})` : ''}

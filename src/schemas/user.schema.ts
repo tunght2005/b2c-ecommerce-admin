@@ -51,9 +51,9 @@ export type LoginInput = z.infer<typeof LoginInputSchema>
 
 /*  Update profile (self) */
 export const UpdateProfileInputSchema = z.object({
-  fullName: FullNameSchema.optional(),
-  phone: PhoneSchema.optional(),
-  avatar: z.string().url('URL ảnh đại diện không hợp lệ').optional()
+  username: FullNameSchema.optional(),
+  email: EmailSchema.optional(),
+  phone: PhoneSchema.optional()
 })
 export type UpdateProfileInput = z.infer<typeof UpdateProfileInputSchema>
 

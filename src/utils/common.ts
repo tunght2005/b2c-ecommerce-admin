@@ -1,4 +1,4 @@
-import type { UserRole } from '../types/user.type'
+import type { UserRole, UserStatus } from '../types/user.type'
 
 const dateFormat = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
@@ -35,7 +35,7 @@ export function formatDateTime(value: string) {
   return dateTimeFormat.format(new Date(value))
 }
 
-export function statusTone(status: string) {
+export function statusTone(status: UserStatus) {
   return status === 'active'
     ? 'border-[#bdeed5] bg-[#eefaf3] text-[#14804a]'
     : 'border-[#f7d3d8] bg-[#fff2f4] text-[#c03747]'

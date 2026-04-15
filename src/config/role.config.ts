@@ -2,6 +2,15 @@ import type { UserRole } from '../types/user.type'
 
 export type SidebarRole = Exclude<UserRole, 'customer'>
 
+export const ROLE_LABELS: Record<UserRole, string> = {
+  admin: 'Admin',
+  customer: 'Customer',
+  shipper: 'Shipper',
+  support: 'Support'
+}
+
+export const USER_ROLE_OPTIONS: UserRole[] = ['admin', 'customer', 'shipper', 'support']
+
 const ROLES = {
   admin: 'admin',
   shipper: 'shipper',

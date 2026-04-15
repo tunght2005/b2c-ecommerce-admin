@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound/NotFound'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Login from './pages/Login/Login'
 import MyProfile from './pages/MyProfile'
+import AllUsers from './pages/AdminUsers'
 
 //Tạo Protect để bảo vệ web khi user biêt domain mà chưa đăng nhập thì những cái như profile, apply k cho phép truy cập
 function ProtectedRoute() {
@@ -29,6 +30,14 @@ export default function useRouteElement() {
           element: (
             <MainLayout>
               <Dashboard />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminUsers,
+          element: (
+            <MainLayout>
+              <AllUsers />
             </MainLayout>
           )
         },

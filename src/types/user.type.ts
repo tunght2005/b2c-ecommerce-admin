@@ -1,4 +1,5 @@
 export type UserRole = 'admin' | 'customer' | 'shipper' | 'support'
+export type UserStatus = 'active' | 'inactive'
 
 export interface User {
   id?: string
@@ -8,7 +9,7 @@ export interface User {
   phone: string | null
   avatar?: string | null
   role: UserRole
-  status: string
+  status: UserStatus
   createdAt: string
   updatedAt: string
 }

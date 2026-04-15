@@ -25,7 +25,7 @@ export const PhoneSchema = z
 
 export const StrongPasswordSchema = z
   .string()
-  .min(6, 'Mật khẩu tối thiểu 10 ký tự')
+  .min(6, 'Mật khẩu tối thiểu 6 ký tự')
   .max(128, 'Mật khẩu quá dài (tối đa 128)')
   .refine((v) => !/\s/.test(v), 'Mật khẩu không được chứa khoảng trắng')
   .refine((v) => /[a-z]/.test(v), 'Phải có ít nhất 1 chữ thường')

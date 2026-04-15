@@ -7,6 +7,11 @@ import Dashboard from './pages/Dashboard/Dashboard'
 import Login from './pages/Login/Login'
 import MyProfile from './pages/MyProfile'
 import AllUsers from './pages/AdminUsers'
+import ProductsPage from './pages/AdminProducts'
+import CategoriesPage from './pages/AdminCategories'
+import BrandsPage from './pages/AdminBrands'
+import AttributesVariantsPage from './pages/AdminAttributesVariants'
+import ProductImagesPage from './pages/AdminProductImages'
 
 //Tạo Protect để bảo vệ web khi user biêt domain mà chưa đăng nhập thì những cái như profile, apply k cho phép truy cập
 function ProtectedRoute() {
@@ -38,6 +43,46 @@ export default function useRouteElement() {
           element: (
             <MainLayout>
               <AllUsers />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminProducts,
+          element: (
+            <MainLayout>
+              <ProductsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminCategories,
+          element: (
+            <MainLayout>
+              <CategoriesPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminBrands,
+          element: (
+            <MainLayout>
+              <BrandsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminAttributesVariants,
+          element: (
+            <MainLayout>
+              <AttributesVariantsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminProductImages,
+          element: (
+            <MainLayout>
+              <ProductImagesPage />
             </MainLayout>
           )
         },

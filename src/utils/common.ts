@@ -35,6 +35,16 @@ export function formatDateTime(value: string) {
   return dateTimeFormat.format(new Date(value))
 }
 
+export function resolveAssetUrl(path: string | null | undefined) {
+  if (!path) return ''
+  if (/^https?:\/\//i.test(path)) return path
+
+  const apiBase = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, '') || ''
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+
+  return `${apiBase}${normalizedPath}`
+}
+
 export function statusTone(status: UserStatus) {
   return status === 'active'
     ? 'border-[#bdeed5] bg-[#eefaf3] text-[#14804a]'

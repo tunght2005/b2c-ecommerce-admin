@@ -53,6 +53,25 @@ function getBuyerInfo(order: OrderEntity) {
   }
 }
 
+function getAddressInfo(order: OrderEntity) {
+  if (typeof order.address_id === 'object' && order.address_id) {
+    const address = order.address_id
+    const location = [address.detail, address.ward, address.district, address.province].filter(Boolean).join(', ')
+
+    return {
+      receiver: address.receiver_name || 'N/A',
+      phone: address.phone || 'N/A',
+      location: location || 'N/A'
+    }
+  }
+
+  return {
+    receiver: 'N/A',
+    phone: 'N/A',
+    location: 'N/A'
+  }
+}
+
 function getShipperInfo(order: OrderEntity) {
   const staff =
     typeof order.shipment?.delivery_staff_id === 'object' && order.shipment?.delivery_staff_id
@@ -180,6 +199,7 @@ export default function OrdersPage() {
         typeof order.voucher_id === 'object' && order.voucher_id !== null && 'code' in order.voucher_id
           ? order.voucher_id.code || ''
           : ''
+      const address = getAddressInfo(order)
 
       const text = [
         extractOrderId(order),
@@ -187,6 +207,9 @@ export default function OrdersPage() {
         order.payment_status,
         buyer,
         buyerEmail,
+        address.receiver,
+        address.phone,
+        address.location,
         shipperName,
         voucherCode
       ]
@@ -355,13 +378,14 @@ export default function OrdersPage() {
                   <th className='cursor-pointer px-4 py-4' onClick={() => toggleSort('createdAt')}>
                     Created At {sortKey === 'createdAt' && (sortDirection === 'asc' ? '↑' : '↓')}
                   </th>
+                  <th className='px-4 py-4'>Delivery Address</th>
                   <th className='px-4 py-4 text-right'>Actions</th>
                 </tr>
               </thead>
               <tbody className='divide-y divide-[#f0edf8] bg-white'>
                 {ordersQuery.isLoading && !ordersQuery.data ? (
                   <tr>
-                    <td colSpan={7} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
                       Loading orders...
                     </td>
                   </tr>
@@ -369,6 +393,7 @@ export default function OrdersPage() {
                   paginatedOrders.map((order: OrderEntity) => {
                     const canConfirmOrder = canConfirm && order.status === 'pending'
                     const canDeleteOrder = canDelete
+                    const address = getAddressInfo(order)
                     return (
                       <tr key={extractOrderId(order)} className='transition hover:bg-[#fbfaff]'>
                         <td className='px-4 py-4'>
@@ -388,6 +413,11 @@ export default function OrdersPage() {
                           <OrderStatusBadge variant='order' status={order.status} />
                         </td>
                         <td className='px-4 py-4 text-sm text-[#5f5a7a]'>{formatDateTime(order.createdAt)}</td>
+                        <td className='px-4 py-4 text-xs text-[#8f8aac]'>
+                          <p>{address.receiver}</p>
+                          <p>{address.phone}</p>
+                          <p className='line-clamp-2'>{address.location}</p>
+                        </td>
                         <td className='px-4 py-4'>
                           <div className='flex flex-wrap items-center justify-end gap-2'>
                             {canConfirmOrder ? (
@@ -416,7 +446,7 @@ export default function OrdersPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={7} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
                       No orders found.
                     </td>
                   </tr>
@@ -450,7 +480,7 @@ export default function OrdersPage() {
             </div>
 
             <div className='space-y-4 overflow-y-auto px-6 py-5'>
-              <div className='grid gap-3 md:grid-cols-2 xl:grid-cols-5'>
+              <div className='grid gap-3 md:grid-cols-2 xl:grid-cols-6'>
                 <article className='rounded-2xl border border-[#eceaf8] p-4'>
                   <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Order Status</p>
                   <div className='mt-2'>
@@ -472,6 +502,12 @@ export default function OrdersPage() {
                   <p className='mt-2 text-sm font-semibold text-[#2d2950]'>{getBuyerInfo(detailOrder).name}</p>
                   <p className='mt-1 text-xs text-[#7a7697]'>{getBuyerInfo(detailOrder).email}</p>
                   <p className='mt-1 text-xs text-[#7a7697]'>{getBuyerInfo(detailOrder).phone}</p>
+                </article>
+                <article className='rounded-2xl border border-[#eceaf8] p-4'>
+                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Delivery Address</p>
+                  <p className='mt-2 text-sm font-semibold text-[#2d2950]'>{getAddressInfo(detailOrder).receiver}</p>
+                  <p className='mt-1 text-xs text-[#7a7697]'>{getAddressInfo(detailOrder).phone}</p>
+                  <p className='mt-1 text-xs text-[#7a7697]'>{getAddressInfo(detailOrder).location}</p>
                 </article>
                 <article className='rounded-2xl border border-[#eceaf8] p-4'>
                   <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Shipper</p>

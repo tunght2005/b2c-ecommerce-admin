@@ -21,6 +21,19 @@ export interface OrderUserRef {
   role?: string
 }
 
+export interface OrderAddressRef {
+  _id: string
+  receiver_name?: string
+  phone?: string
+  province?: string
+  district?: string
+  ward?: string
+  detail?: string
+  latitude?: number | null
+  longitude?: number | null
+  is_default?: boolean
+}
+
 export interface OrderShipperRef {
   _id: string
   name?: string
@@ -45,7 +58,7 @@ export interface OrderItem {
 export interface OrderEntity {
   _id: string
   user_id: string | OrderUserRef
-  address_id: string
+  address_id: string | OrderAddressRef
   items: OrderItem[]
   total_price: number
   discount_price: number

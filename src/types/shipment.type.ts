@@ -20,12 +20,25 @@ export interface ShipmentOrderItem {
   quantity: number
 }
 
+export interface ShipmentAddressRef {
+  _id: string
+  receiver_name?: string
+  phone?: string
+  province?: string
+  district?: string
+  ward?: string
+  detail?: string
+  latitude?: number | null
+  longitude?: number | null
+  is_default?: boolean
+}
+
 export interface ShipmentOrderRef {
   _id: string
   user_id: string | Pick<User, 'username' | 'email' | 'phone' | 'role'>
   status: string
   payment_status: string
-  address_id?: string
+  address_id?: string | ShipmentAddressRef
   items?: ShipmentOrderItem[]
   total_price?: number
   discount_price?: number
@@ -57,6 +70,7 @@ export interface ShipmentStaffRef {
 export interface ShipmentEntity {
   _id: string
   order_id: string | ShipmentOrderRef
+  delivery_address_id?: string | ShipmentAddressRef | null
   delivery_staff_id?: string | ShipmentStaffRef | null
   status: ShipmentStatus
   expected_delivery_at: string | null

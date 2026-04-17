@@ -46,6 +46,32 @@ function getBuyerContact(shipment: ShipmentEntity) {
   return buyer?.email || buyer?.phone || 'N/A'
 }
 
+function getDeliveryAddress(shipment: ShipmentEntity) {
+  const shipmentAddress =
+    typeof shipment.delivery_address_id === 'object' && shipment.delivery_address_id
+      ? shipment.delivery_address_id
+      : null
+  const order = typeof shipment.order_id === 'object' && shipment.order_id ? shipment.order_id : null
+  const orderAddress = order && typeof order.address_id === 'object' ? order.address_id : null
+  const address = shipmentAddress || orderAddress
+
+  if (!address) {
+    return {
+      receiver: 'N/A',
+      phone: 'N/A',
+      location: 'N/A'
+    }
+  }
+
+  const location = [address.detail, address.ward, address.district, address.province].filter(Boolean).join(', ')
+
+  return {
+    receiver: address.receiver_name || 'N/A',
+    phone: address.phone || 'N/A',
+    location: location || 'N/A'
+  }
+}
+
 function getOrderId(shipment: ShipmentEntity) {
   return typeof shipment.order_id === 'object' && shipment.order_id ? shipment.order_id._id : shipment.order_id || 'N/A'
 }
@@ -81,6 +107,9 @@ function getShipmentSearchText(shipment: ShipmentEntity) {
     order?.payment_status,
     buyer?.username,
     buyer?.email,
+    getDeliveryAddress(shipment).receiver,
+    getDeliveryAddress(shipment).phone,
+    getDeliveryAddress(shipment).location,
     shipper?.name,
     shipperUser?.username,
     shipperUser?.email
@@ -343,6 +372,9 @@ export default function ShipmentsPage() {
                           <p className='mt-1 text-xs text-[#8f8aac]'>
                             {getBuyerName(shipment)} • {getBuyerContact(shipment)}
                           </p>
+                          <p className='mt-1 text-xs text-[#8f8aac]'>
+                            Address: {getDeliveryAddress(shipment).location}
+                          </p>
                           {order ? (
                             <p className='mt-1 text-xs text-[#8f8aac]'>{formatCurrency(order.final_price)}</p>
                           ) : null}
@@ -487,7 +519,14 @@ export default function ShipmentsPage() {
                 <div className='rounded-2xl border border-[#eceaf8] p-4'>
                   <div className='flex items-center gap-2 text-[#6f62cf]'>
                     <MapPin className='h-4 w-4' />
-                    <p className='text-sm font-bold'>Shipment Notes</p>
+                    <p className='text-sm font-bold'>Delivery Address & Notes</p>
+                  </div>
+                  <div className='mt-4 rounded-xl border border-[#eceaf8] bg-[#fbfaff] p-3'>
+                    <p className='text-sm font-semibold text-[#2d2950]'>
+                      {getDeliveryAddress(selectedShipment).receiver}
+                    </p>
+                    <p className='mt-1 text-xs text-[#7a7697]'>{getDeliveryAddress(selectedShipment).phone}</p>
+                    <p className='mt-1 text-xs text-[#7a7697]'>{getDeliveryAddress(selectedShipment).location}</p>
                   </div>
                   <p className='mt-4 text-sm leading-6 text-[#5f5a7a]'>
                     {selectedShipment.notes || 'No notes available.'}

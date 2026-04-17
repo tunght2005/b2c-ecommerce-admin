@@ -12,6 +12,12 @@ import CategoriesPage from './pages/AdminCategories'
 import BrandsPage from './pages/AdminBrands'
 import AttributesVariantsPage from './pages/AdminAttributesVariants'
 import ProductImagesPage from './pages/AdminProductImages'
+import OrdersPage from './pages/AdminOrders'
+import OrderItemsPage from './pages/AdminOrderItems'
+import ShipmentsPage from './pages/AdminShipments'
+import ShipperAssignPage from './pages/AdminShipperAssign'
+import TrackingLogsPage from './pages/AdminTrackingLogs'
+import DeliveryStaffPage from './pages/AdminDeliveryStaff'
 
 //Tạo Protect để bảo vệ web khi user biêt domain mà chưa đăng nhập thì những cái như profile, apply k cho phép truy cập
 function ProtectedRoute() {
@@ -83,6 +89,54 @@ export default function useRouteElement() {
           element: (
             <MainLayout>
               <ProductImagesPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminOrders,
+          element: (
+            <MainLayout>
+              <OrdersPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminOrderItems,
+          element: (
+            <MainLayout>
+              <OrderItemsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminShipments,
+          element: (
+            <MainLayout>
+              <ShipmentsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminShipperAssign,
+          element: (
+            <MainLayout>
+              <ShipperAssignPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminTrackingLogs,
+          element: (
+            <MainLayout>
+              <TrackingLogsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminDeliveryStaff,
+          element: (
+            <MainLayout>
+              <DeliveryStaffPage />
             </MainLayout>
           )
         },

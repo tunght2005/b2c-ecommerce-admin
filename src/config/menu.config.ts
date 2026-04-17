@@ -64,7 +64,7 @@ export const MENU_CONFIG: MenuItem[] = [
     path: path.adminOrders,
     roles: ROLE_GROUPS.ALL_STAFF,
     children: [
-      { title: 'All Order', path: path.adminOrders, roles: ROLE_GROUPS.ALL_STAFF },
+      { title: 'All Orders', path: path.adminOrders, roles: ROLE_GROUPS.ALL_STAFF },
       { title: 'Order Items', path: path.adminOrderItems, roles: ROLE_GROUPS.ALL_STAFF }
     ]
   },
@@ -73,11 +73,11 @@ export const MENU_CONFIG: MenuItem[] = [
   {
     title: 'Shipments',
     path: path.adminShipments,
-    roles: ROLE_GROUPS.ADMIN_SHIPPER,
+    roles: ROLE_GROUPS.ALL_STAFF,
     children: [
-      { title: 'All Shipment', path: path.adminShipments, roles: ROLE_GROUPS.ADMIN_SHIPPER },
-      { title: 'Shipper Assign', path: path.adminShipperAssign, roles: ROLE_GROUPS.ADMIN_SHIPPER },
-      { title: 'Tracking Logs', path: path.adminTrackingLogs, roles: ROLE_GROUPS.ADMIN_SHIPPER }
+      { title: 'All Shipments', path: path.adminShipments, roles: ROLE_GROUPS.ALL_STAFF },
+      { title: 'Shipper Assign', path: path.adminShipperAssign, roles: ROLE_GROUPS.ADMIN_SUPPORT },
+      { title: 'Tracking Logs', path: path.adminTrackingLogs, roles: ROLE_GROUPS.ALL_STAFF }
     ]
   },
 

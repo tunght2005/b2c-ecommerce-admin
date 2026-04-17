@@ -18,6 +18,14 @@ import ShipmentsPage from './pages/AdminShipments'
 import ShipperAssignPage from './pages/AdminShipperAssign'
 import TrackingLogsPage from './pages/AdminTrackingLogs'
 import DeliveryStaffPage from './pages/AdminDeliveryStaff'
+import FeedbackTicketsPage from './pages/AdminFeedbackTickets'
+import FeedbackRepliesPage from './pages/AdminFeedbackReplies'
+import FeedbackRatingsPage from './pages/AdminFeedbackRatings'
+import ReturnsPage from './pages/AdminReturns'
+import ReturnPoliciesPage from './pages/AdminReturnPolicies'
+import WarrantyPage from './pages/AdminWarranty'
+import AiConversationsPage from './pages/AdminAiConversations'
+import AiFeedbackAnalysisPage from './pages/AdminAiFeedbackAnalysis'
 
 //Tạo Protect để bảo vệ web khi user biêt domain mà chưa đăng nhập thì những cái như profile, apply k cho phép truy cập
 function ProtectedRoute() {
@@ -137,6 +145,70 @@ export default function useRouteElement() {
           element: (
             <MainLayout>
               <DeliveryStaffPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminFeedbackTickets,
+          element: (
+            <MainLayout>
+              <FeedbackTicketsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminFeedbackReplies,
+          element: (
+            <MainLayout>
+              <FeedbackRepliesPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminFeedbackRatings,
+          element: (
+            <MainLayout>
+              <FeedbackRatingsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminReturns,
+          element: (
+            <MainLayout>
+              <ReturnsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminReturnPolicies,
+          element: (
+            <MainLayout>
+              <ReturnPoliciesPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminWarranty,
+          element: (
+            <MainLayout>
+              <WarrantyPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminAiConversations,
+          element: (
+            <MainLayout>
+              <AiConversationsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminAiFeedbackAnalysis,
+          element: (
+            <MainLayout>
+              <AiFeedbackAnalysisPage />
             </MainLayout>
           )
         },

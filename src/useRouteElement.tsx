@@ -26,6 +26,19 @@ import ReturnPoliciesPage from './pages/AdminReturnPolicies'
 import WarrantyPage from './pages/AdminWarranty'
 import AiConversationsPage from './pages/AdminAiConversations'
 import AiFeedbackAnalysisPage from './pages/AdminAiFeedbackAnalysis'
+import PromotionsPage from './pages/AdminPromotions'
+import ProductPromotionsPage from './pages/AdminProductPromotions'
+import VouchersPage from './pages/AdminVouchers'
+import VoucherUsagesPage from './pages/AdminVoucherUsages'
+import StaffPage from './pages/AdminStaff'
+import ReviewsPage from './pages/AdminReviews'
+import MarketingPage from './pages/AdminMarketing'
+import BannersPage from './pages/AdminBanners'
+import NotificationsPage from './pages/AdminNotifications'
+import AnalyticsPage from './pages/AdminAnalytics'
+import DashboardStatsPage from './pages/AdminDashboardStats'
+import RevenuePage from './pages/AdminRevenue'
+import OrdersReportPage from './pages/AdminOrdersReport'
 
 //Tạo Protect để bảo vệ web khi user biêt domain mà chưa đăng nhập thì những cái như profile, apply k cho phép truy cập
 function ProtectedRoute() {
@@ -209,6 +222,94 @@ export default function useRouteElement() {
           element: (
             <MainLayout>
               <AiFeedbackAnalysisPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminPromotions,
+          element: (
+            <MainLayout>
+              <PromotionsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminProductPromotions,
+          element: (
+            <MainLayout>
+              <ProductPromotionsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminVouchers,
+          element: (
+            <MainLayout>
+              <VouchersPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminVoucherUsages,
+          element: (
+            <MainLayout>
+              <VoucherUsagesPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminStaff,
+          element: (
+            <MainLayout>
+              <StaffPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminReviews,
+          element: (
+            <MainLayout>
+              <ReviewsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminBanners,
+          element: (
+            <MainLayout>
+              <BannersPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminNotifications,
+          element: (
+            <MainLayout>
+              <NotificationsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminDashboardStats,
+          element: (
+            <MainLayout>
+              <DashboardStatsPage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminRevenue,
+          element: (
+            <MainLayout>
+              <RevenuePage />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.adminOrdersReport,
+          element: (
+            <MainLayout>
+              <OrdersReportPage />
             </MainLayout>
           )
         },

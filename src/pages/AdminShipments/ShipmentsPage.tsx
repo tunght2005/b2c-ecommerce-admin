@@ -34,6 +34,25 @@ const ADMIN_STATUS_FLOW: Record<ShipmentStatus, ShipmentStatus[]> = {
   cancelled: []
 }
 
+const DEFAULT_SHOP_LOCATION = 'Kho shop'
+const MAP_COUNTRY_HINT = 'Việt Nam'
+
+interface PresetOption {
+  label: string
+  value: string
+}
+
+function normalizeVietnamPlace(place: string) {
+  const normalized = place.trim()
+
+  if (!normalized) {
+    return MAP_COUNTRY_HINT
+  }
+
+  const hasVietnamHint = /viet\s*nam|việt\s*nam|vietnam|\bvn\b/i.test(normalized)
+  return hasVietnamHint ? normalized : `${normalized}, ${MAP_COUNTRY_HINT}`
+}
+
 function getBuyerName(shipment: ShipmentEntity) {
   const order = typeof shipment.order_id === 'object' && shipment.order_id ? shipment.order_id : null
   const buyer = order && typeof order.user_id === 'object' ? order.user_id : null
@@ -124,6 +143,160 @@ function getAllowedStatuses(shipment: ShipmentEntity, isShipper: boolean) {
   return ADMIN_STATUS_FLOW[shipment.status] || []
 }
 
+function getLocationPresetsByStatus(status: ShipmentStatus, shipment: ShipmentEntity): PresetOption[] {
+  const destination = getDeliveryAddress(shipment).location
+
+  if (status === 'assigned') {
+    return [
+      { label: 'Đã nhận đơn tại kho shop 7Store', value: 'Đã nhận đơn tại kho shop 7Store' },
+      { label: 'Chờ xuất kho', value: 'Chờ xuất kho' }
+    ]
+  }
+
+  if (status === 'in_transit') {
+    return [
+      {
+        label: 'Đang đi tới điểm giao hàng',
+        value: `Đang vận chuyển từ ${DEFAULT_SHOP_LOCATION} đến ${destination}`
+      },
+      {
+        label: 'Đang đến điểm giao',
+        value: `Đang đến điểm giao: ${destination}`
+      }
+    ]
+  }
+
+  if (status === 'delivered') {
+    return [
+      {
+        label: 'Đã giao thành công tại địa chỉ khách',
+        value: `Đã giao thành công tại ${destination}`
+      },
+      {
+        label: 'Đã giao và xác nhận người nhận',
+        value: 'Đã giao và xác nhận với người nhận'
+      }
+    ]
+  }
+
+  if (status === 'failed') {
+    return [
+      {
+        label: 'Không giao được tại địa chỉ hiện tại',
+        value: `Không giao được tại ${destination}`
+      },
+      {
+        label: 'Khách hẹn giao lại',
+        value: 'Khách hẹn giao lại vào khung giờ khác'
+      }
+    ]
+  }
+
+  return []
+}
+
+function getNotePresetsByStatus(status: ShipmentStatus): PresetOption[] {
+  if (status === 'assigned') {
+    return [
+      { label: 'Đã nhận shipment', value: 'Đã nhận shipment và sẵn sàng giao hàng' },
+      { label: 'Đang chờ xuất kho', value: 'Đang chờ xuất kho theo lịch' }
+    ]
+  }
+
+  if (status === 'in_transit') {
+    return [
+      { label: 'Đang vận chuyển', value: 'Đang vận chuyển đến địa chỉ khách' },
+      { label: 'Sắp tới nơi', value: 'Shipper sắp tới điểm giao, vui lòng nghe máy' }
+    ]
+  }
+
+  if (status === 'delivered') {
+    return [
+      { label: 'Giao thành công', value: 'Giao thành công và khách đã nhận hàng' },
+      { label: 'Đã hoàn tất shipment', value: 'Đã hoàn tất shipment' }
+    ]
+  }
+
+  if (status === 'failed') {
+    return [
+      { label: 'Khách không nghe máy', value: 'Khách không nghe máy, tạm hoãn giao' },
+      { label: 'Khách hẹn lại', value: 'Khách hẹn lịch giao lại vào thời gian khác' }
+    ]
+  }
+
+  return []
+}
+
+function buildMapRouteUrl(shipment: ShipmentEntity, originInput: string) {
+  const destination = getDeliveryAddress(shipment).location
+
+  if (!destination || destination === 'N/A') {
+    return null
+  }
+
+  const origin = normalizeVietnamPlace(originInput.trim() || DEFAULT_SHOP_LOCATION)
+  const destinationInVn = normalizeVietnamPlace(destination)
+  const params = new URLSearchParams({
+    api: '1',
+    origin,
+    destination: destinationInVn,
+    travelmode: 'driving',
+    hl: 'vi',
+    gl: 'vn',
+    region: 'vn'
+  })
+
+  return `https://www.google.com/maps/dir/?${params.toString()}`
+}
+
+function buildDestinationEmbedMapUrl(shipment: ShipmentEntity) {
+  const destination = getDeliveryAddress(shipment).location
+
+  if (!destination || destination === 'N/A') {
+    return null
+  }
+
+  const destinationInVn = normalizeVietnamPlace(destination)
+  const params = new URLSearchParams({
+    q: destinationInVn,
+    z: '15',
+    output: 'embed',
+    hl: 'vi',
+    gl: 'vn'
+  })
+
+  return `https://maps.google.com/maps?${params.toString()}`
+}
+
+function buildRouteEmbedMapUrl(shipment: ShipmentEntity, originInput: string) {
+  const destination = getDeliveryAddress(shipment).location
+
+  if (!destination || destination === 'N/A') {
+    return null
+  }
+
+  const origin = normalizeVietnamPlace(originInput.trim() || DEFAULT_SHOP_LOCATION)
+  const destinationInVn = normalizeVietnamPlace(destination)
+  const params = new URLSearchParams({
+    saddr: origin,
+    daddr: destinationInVn,
+    output: 'embed',
+    hl: 'vi',
+    gl: 'vn'
+  })
+
+  return `https://maps.google.com/maps?${params.toString()}`
+}
+
+function openMapRoute(url: string | null) {
+  if (!url) {
+    toast.warn('Chưa có dữ liệu địa chỉ giao để mở bản đồ')
+    return
+  }
+
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
 export default function ShipmentsPage() {
   const queryClient = useQueryClient()
   const { role } = useAuth()
@@ -139,7 +312,10 @@ export default function ShipmentsPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(8)
   const [detailShipment, setDetailShipment] = useState<ShipmentEntity | null>(null)
+  const [showDetailMap, setShowDetailMap] = useState(false)
   const [updateTarget, setUpdateTarget] = useState<ShipmentEntity | null>(null)
+  const [showRouteMap, setShowRouteMap] = useState(false)
+  const [routeMapOrigin, setRouteMapOrigin] = useState('')
   const [updateStatus, setUpdateStatus] = useState<ShipmentStatus>('in_transit')
   const [updateLocation, setUpdateLocation] = useState('')
   const [updateNote, setUpdateNote] = useState('')
@@ -177,7 +353,8 @@ export default function ShipmentsPage() {
     placeholderData: (previousData) => previousData
   })
 
-  const shipments = shipmentsQuery.data?.shipments ?? []
+  const shipmentsData = shipmentsQuery.data?.shipments
+  const shipments = useMemo(() => shipmentsData ?? [], [shipmentsData])
   const summary = shipmentsQuery.data?.summary
 
   const updateMutation = useMutation({
@@ -259,15 +436,26 @@ export default function ShipmentsPage() {
 
   const openUpdateModal = (shipment: ShipmentEntity) => {
     setUpdateTarget(shipment)
+    setShowRouteMap(false)
+    setRouteMapOrigin('')
     const availableStatuses = getAllowedStatuses(shipment, isShipper)
     setUpdateStatus(availableStatuses[0] || shipment.status)
     setUpdateLocation('')
     setUpdateNote('')
   }
 
+  const openDetailModal = (shipment: ShipmentEntity) => {
+    setDetailShipment(shipment)
+    setShowDetailMap(false)
+  }
+
   const activeFiltersCount = [Boolean(search.trim()), statusFilter !== 'all'].filter(Boolean).length
 
   const selectedShipment = detailShipment ?? null
+  const locationPresets = updateTarget ? getLocationPresetsByStatus(updateStatus, updateTarget) : []
+  const notePresets = getNotePresetsByStatus(updateStatus)
+  const detailMapUrl = showDetailMap && selectedShipment ? buildDestinationEmbedMapUrl(selectedShipment) : null
+  const routeMapUrl = showRouteMap && updateTarget ? buildRouteEmbedMapUrl(updateTarget, routeMapOrigin) : null
 
   return (
     <section className='space-y-5 pb-4'>
@@ -401,7 +589,7 @@ export default function ShipmentsPage() {
                                 <RefreshCcw className='h-4 w-4' /> Update
                               </button>
                             ) : null}
-                            <CrudActionButtons onView={() => setDetailShipment(shipment)} buttonSize='sm' />
+                            <CrudActionButtons onView={() => openDetailModal(shipment)} buttonSize='sm' />
                           </div>
                         </td>
                       </tr>
@@ -528,6 +716,26 @@ export default function ShipmentsPage() {
                     <p className='mt-1 text-xs text-[#7a7697]'>{getDeliveryAddress(selectedShipment).phone}</p>
                     <p className='mt-1 text-xs text-[#7a7697]'>{getDeliveryAddress(selectedShipment).location}</p>
                   </div>
+                  <div className='mt-3 flex flex-wrap gap-2'>
+                    <button
+                      type='button'
+                      onClick={() => setShowDetailMap((prev) => !prev)}
+                      className='inline-flex h-8 items-center rounded-full border border-[#d8edff] bg-[#eff8ff] px-3 text-xs font-semibold text-[#2f78d1] transition hover:bg-[#e2f2ff]'
+                    >
+                      {showDetailMap ? 'Hide map' : 'Show map'}
+                    </button>
+                  </div>
+                  {detailMapUrl ? (
+                    <div className='mt-3 overflow-hidden rounded-xl border border-[#eceaf8]'>
+                      <iframe
+                        title='delivery-destination-map'
+                        src={detailMapUrl}
+                        loading='lazy'
+                        referrerPolicy='no-referrer-when-downgrade'
+                        className='h-48 w-full border-0'
+                      />
+                    </div>
+                  ) : null}
                   <p className='mt-4 text-sm leading-6 text-[#5f5a7a]'>
                     {selectedShipment.notes || 'No notes available.'}
                   </p>
@@ -584,7 +792,10 @@ export default function ShipmentsPage() {
             <div className='flex justify-end gap-3 border-t border-[#eceaf8] px-6 py-4'>
               <button
                 type='button'
-                onClick={() => setDetailShipment(null)}
+                onClick={() => {
+                  setDetailShipment(null)
+                  setShowDetailMap(false)
+                }}
                 className='inline-flex h-10 items-center rounded-full border border-[#d9d3ef] px-5 text-sm font-semibold text-[#5f5a7a] transition hover:bg-[#f0edf8]'
               >
                 Close
@@ -623,16 +834,79 @@ export default function ShipmentsPage() {
 
               <label className='block'>
                 <span className='text-sm font-semibold text-[#4a4666]'>Location</span>
+                <select
+                  defaultValue=''
+                  onChange={(event) => {
+                    if (event.target.value) {
+                      setUpdateLocation(event.target.value)
+                    }
+                  }}
+                  className='mt-2 h-11 w-full rounded-2xl border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+                >
+                  <option value=''>Chọn mẫu location theo trạng thái</option>
+                  {locationPresets.map((preset) => (
+                    <option key={preset.label} value={preset.value}>
+                      {preset.label}
+                    </option>
+                  ))}
+                </select>
                 <input
                   value={updateLocation}
                   onChange={(event) => setUpdateLocation(event.target.value)}
                   className='mt-2 h-11 w-full rounded-2xl border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
-                  placeholder='Tracking location / status note location'
+                  placeholder='Nhập điểm xuất phát hoặc vị trí hiện tại'
                 />
+                <div className='mt-2 flex flex-wrap items-center gap-2'>
+                  <button
+                    type='button'
+                    onClick={() => {
+                      setRouteMapOrigin(updateLocation)
+                      setShowRouteMap((prev) => !prev)
+                    }}
+                    className='inline-flex h-8 items-center rounded-full border border-[#d8edff] bg-[#eff8ff] px-3 text-xs font-semibold text-[#2f78d1] transition hover:bg-[#e2f2ff]'
+                  >
+                    {showRouteMap ? 'Hide inline map' : 'Show inline map'}
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => openMapRoute(updateTarget ? buildMapRouteUrl(updateTarget, updateLocation) : null)}
+                    className='inline-flex h-8 items-center rounded-full border border-[#d8edff] bg-[#eff8ff] px-3 text-xs font-semibold text-[#2f78d1] transition hover:bg-[#e2f2ff]'
+                  >
+                    Open route map
+                  </button>
+                  <p className='text-xs text-[#8f8aac]'>Map sẽ dẫn đường từ location đến địa chỉ giao của khách.</p>
+                </div>
+                {routeMapUrl ? (
+                  <div className='mt-3 overflow-hidden rounded-xl border border-[#eceaf8]'>
+                    <iframe
+                      title='shipment-route-map'
+                      src={routeMapUrl}
+                      loading='lazy'
+                      referrerPolicy='no-referrer-when-downgrade'
+                      className='h-56 w-full border-0'
+                    />
+                  </div>
+                ) : null}
               </label>
 
               <label className='block'>
                 <span className='text-sm font-semibold text-[#4a4666]'>Note</span>
+                <select
+                  defaultValue=''
+                  onChange={(event) => {
+                    if (event.target.value) {
+                      setUpdateNote(event.target.value)
+                    }
+                  }}
+                  className='mt-2 h-11 w-full rounded-2xl border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+                >
+                  <option value=''>Chọn văn mẫu note</option>
+                  {notePresets.map((preset) => (
+                    <option key={preset.label} value={preset.value}>
+                      {preset.label}
+                    </option>
+                  ))}
+                </select>
                 <textarea
                   value={updateNote}
                   onChange={(event) => setUpdateNote(event.target.value)}
@@ -646,7 +920,11 @@ export default function ShipmentsPage() {
             <div className='mt-6 flex justify-end gap-3'>
               <button
                 type='button'
-                onClick={() => setUpdateTarget(null)}
+                onClick={() => {
+                  setUpdateTarget(null)
+                  setShowRouteMap(false)
+                  setRouteMapOrigin('')
+                }}
                 className='inline-flex h-10 items-center rounded-full border border-[#d9d3ef] px-5 text-sm font-semibold text-[#5f5a7a] transition hover:bg-[#f0edf8]'
               >
                 Cancel

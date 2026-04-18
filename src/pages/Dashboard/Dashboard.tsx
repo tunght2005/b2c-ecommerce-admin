@@ -1,112 +1,402 @@
-import { MoreVertical, ShoppingCart, ChartNoAxesCombined, FileText, UserRound, CircleDot } from 'lucide-react'
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { Activity, AlertTriangle, Bot, PackageCheck, Truck } from 'lucide-react'
+
+import orderApi from '../../apis/order.api'
+import shipmentApi from '../../apis/shipment.api'
+import feedbackApi from '../../apis/feedback.api'
+import chatbotApi from '../../apis/chatbot.api'
+import { useAuth } from '../../contexts/app.context'
+import OrderStatsCards from '../../components/Order/OrderStatsCards'
+import OrderStatusBadge from '../../components/Order/OrderStatusBadge'
+import ShipmentStatusBadge from '../../components/Shipment/ShipmentStatusBadge'
+import type { OrderEntity, OrderSummary } from '../../types/order.type'
+import type { ShipmentEntity, ShipmentSummary, ShipmentStatus } from '../../types/shipment.type'
+import type { FeedbackEntity } from '../../types/feedback.type'
+import type { ChatbotAnalyticsResponse } from '../../types/chatbot.type'
+import { formatCurrency, formatDateTime } from '../../utils/common'
+
+type StaffRole = 'admin' | 'support' | 'shipper'
+
+interface DashboardData {
+  role: StaffRole
+  orderSummary: OrderSummary
+  orders: OrderEntity[]
+  shipments: ShipmentEntity[]
+  shipmentSummary: ShipmentSummary
+  feedbacks: FeedbackEntity[]
+  chatbotAnalytics: ChatbotAnalyticsResponse['data'] | null
+}
+
+const EMPTY_ORDER_SUMMARY: OrderSummary = {
+  totalOrders: 0,
+  pendingOrders: 0,
+  completedOrders: 0,
+  cancelledOrders: 0,
+  totalRevenue: 0
+}
+
+const EMPTY_SHIPMENT_SUMMARY: ShipmentSummary = {
+  totalShipments: 0,
+  pendingShipments: 0,
+  assignedShipments: 0,
+  inTransitShipments: 0,
+  deliveredShipments: 0
+}
+
+const SHIPMENT_BAR_COLORS: Record<ShipmentStatus, string> = {
+  pending: 'bg-[#f5b15f]',
+  assigned: 'bg-[#52a8ff]',
+  in_transit: 'bg-[#7b66df]',
+  delivered: 'bg-[#31b07a]',
+  failed: 'bg-[#dd6473]',
+  cancelled: 'bg-[#dd6473]'
+}
+
+function isStaffRole(role: string | null): role is StaffRole {
+  return role === 'admin' || role === 'support' || role === 'shipper'
+}
+
+function getShipmentAddress(shipment: ShipmentEntity) {
+  const directAddress =
+    typeof shipment.delivery_address_id === 'object' && shipment.delivery_address_id
+      ? shipment.delivery_address_id
+      : null
+  const order = typeof shipment.order_id === 'object' && shipment.order_id ? shipment.order_id : null
+  const orderAddress = order && typeof order.address_id === 'object' ? order.address_id : null
+  const address = directAddress || orderAddress
+
+  if (!address) return 'N/A'
+  return [address.detail, address.ward, address.district, address.province].filter(Boolean).join(', ') || 'N/A'
+}
+
+function buildShipperShipmentSummary(shipments: ShipmentEntity[]): ShipmentSummary {
+  return {
+    totalShipments: shipments.length,
+    pendingShipments: shipments.filter((s) => s.status === 'pending').length,
+    assignedShipments: shipments.filter((s) => s.status === 'assigned').length,
+    inTransitShipments: shipments.filter((s) => s.status === 'in_transit').length,
+    deliveredShipments: shipments.filter((s) => s.status === 'delivered').length
+  }
+}
+
+async function fetchDashboardData(role: StaffRole): Promise<DashboardData> {
+  if (role === 'shipper') {
+    const [orderResponse, shipmentResponse] = await Promise.all([
+      orderApi.listAllAdmin({ page: 1, limit: 6, sortBy: 'createdAt', sortOrder: 'desc' }),
+      shipmentApi.assignedOrders()
+    ])
+
+    const orderPayload = orderResponse.data.data
+    const shipments = shipmentResponse.data.data ?? []
+
+    return {
+      role,
+      orderSummary: orderPayload?.summary ?? EMPTY_ORDER_SUMMARY,
+      orders: orderPayload?.orders ?? [],
+      shipments,
+      shipmentSummary: buildShipperShipmentSummary(shipments),
+      feedbacks: [],
+      chatbotAnalytics: null
+    }
+  }
+
+  const [orderResponse, shipmentResponse, feedbackResult, chatbotResult] = await Promise.all([
+    orderApi.listAllAdmin({ page: 1, limit: 6, sortBy: 'createdAt', sortOrder: 'desc' }),
+    shipmentApi.listAll({ page: 1, limit: 6, sortBy: 'updatedAt', sortOrder: 'desc' }),
+    feedbackApi.listAll({ page: 1, limit: 20, status: 'all', priority: 'all' }).catch(() => null),
+    chatbotApi.getAnalytics({ limit: 10 }).catch(() => null)
+  ])
+
+  const orderPayload = orderResponse.data.data
+  const shipmentPayload = shipmentResponse.data.data
+
+  return {
+    role,
+    orderSummary: orderPayload?.summary ?? EMPTY_ORDER_SUMMARY,
+    orders: orderPayload?.orders ?? [],
+    shipments: shipmentPayload?.shipments ?? [],
+    shipmentSummary: shipmentPayload?.summary ?? EMPTY_SHIPMENT_SUMMARY,
+    feedbacks: feedbackResult?.data?.data?.feedbacks ?? [],
+    chatbotAnalytics: chatbotResult?.data?.data ?? null
+  }
+}
 
 export default function Dashboard() {
-  const reps = [
-    { name: 'Nicholas Patrick', sales: '$ 2540.58', products: '150 Products', premium: '105 Premium', rank: '+Gold' },
-    { name: 'Cordell Edwards', sales: '$ 1567.80', products: '95 Products', premium: '60 Premium', rank: '+Silver' },
-    { name: 'Derrick Spencer', sales: '$ 1640.26', products: '120 Products', premium: '75 Premium', rank: '+Silver' },
-    { name: 'Larissa Burton', sales: '$ 2340.58', products: '120 Products', premium: '99 Premium', rank: '+Gold' }
-  ]
+  const { role } = useAuth()
+  const canRenderDashboard = isStaffRole(role)
 
-  const stats = [
-    { title: 'Product sold', value: '25.1k', delta: '+15%', negative: false, icon: ShoppingCart, action: 'View Report' },
-    { title: 'Total Profit', value: '$2,435k', delta: '-3.5%', negative: true, icon: ChartNoAxesCombined, action: 'View Report' },
-    { title: 'Total No. of Claim', value: '3.5M', delta: '+15%', negative: false, icon: FileText, action: 'View More' },
-    { title: 'New Customer', value: '43.5k', delta: '+10%', negative: false, icon: UserRound, action: 'View More' }
-  ]
+  const dashboardQuery = useQuery({
+    queryKey: ['dashboard', role],
+    queryFn: () => fetchDashboardData(role as StaffRole),
+    enabled: canRenderDashboard,
+    placeholderData: (previousData) => previousData
+  })
+
+  const data = dashboardQuery.data
+
+  const stats = useMemo(() => {
+    if (!data) return []
+
+    const orderSummary = data.orderSummary
+    const shipmentSummary = data.shipmentSummary
+    const unresolvedFeedback = data.feedbacks.filter((item) => item.status === 'open' || item.status === 'in_progress')
+
+    if (data.role === 'shipper') {
+      return [
+        { label: 'Đơn phụ trách', value: orderSummary.totalOrders, tone: 'from-[#6f62cf] to-[#8a7bf2]' },
+        {
+          label: 'Đang giao',
+          value: shipmentSummary.inTransitShipments,
+          helper: `${shipmentSummary.assignedShipments} assigned`,
+          tone: 'from-[#2f86d6] to-[#65b4ff]'
+        },
+        {
+          label: 'Đã giao',
+          value: shipmentSummary.deliveredShipments,
+          tone: 'from-[#2fb67a] to-[#5dd7a0]'
+        },
+        {
+          label: 'Giá trị đơn',
+          value: formatCurrency(orderSummary.totalRevenue),
+          tone: 'from-[#f08c44] to-[#f7b36d]'
+        }
+      ]
+    }
+
+    return [
+      {
+        label: 'Tổng đơn hàng',
+        value: orderSummary.totalOrders,
+        helper: `${orderSummary.pendingOrders} pending`,
+        tone: 'from-[#6f62cf] to-[#8a7bf2]'
+      },
+      {
+        label: 'Doanh thu',
+        value: formatCurrency(orderSummary.totalRevenue),
+        tone: 'from-[#2fb67a] to-[#5dd7a0]'
+      },
+      {
+        label: 'Shipment hoạt động',
+        value: shipmentSummary.assignedShipments + shipmentSummary.inTransitShipments,
+        helper: `${shipmentSummary.deliveredShipments} delivered`,
+        tone: 'from-[#2f86d6] to-[#65b4ff]'
+      },
+      {
+        label: 'Feedback chưa xử lý',
+        value: unresolvedFeedback.length,
+        helper: `${data.feedbacks.length} total feedback`,
+        tone: 'from-[#f08c44] to-[#f7b36d]'
+      }
+    ]
+  }, [data])
+
+  const shipmentStatusRows = useMemo(() => {
+    if (!data) return []
+
+    const summary = data.shipmentSummary
+    const rows = [
+      { label: 'Pending', value: summary.pendingShipments, status: 'pending' as ShipmentStatus },
+      { label: 'Assigned', value: summary.assignedShipments, status: 'assigned' as ShipmentStatus },
+      { label: 'In Transit', value: summary.inTransitShipments, status: 'in_transit' as ShipmentStatus },
+      { label: 'Delivered', value: summary.deliveredShipments, status: 'delivered' as ShipmentStatus }
+    ]
+
+    const maxValue = Math.max(1, ...rows.map((row) => row.value))
+
+    return rows.map((row) => ({
+      ...row,
+      width: `${Math.max(8, Math.round((row.value / maxValue) * 100))}%`
+    }))
+  }, [data])
+
+  if (!canRenderDashboard) {
+    return (
+      <section className='rounded-3xl border border-[#eceaf8] bg-white p-6'>
+        <h1 className='text-2xl font-black text-[#201f47]'>Dashboard</h1>
+        <p className='mt-2 text-sm text-[#7a7697]'>Bạn không có quyền truy cập dashboard nội bộ.</p>
+      </section>
+    )
+  }
 
   return (
-    <div className='space-y-5'>
-      <section className='rounded-3xl border border-[#eceaf9] bg-white p-5'>
-        <h1 className='mb-1 text-[2.05rem] leading-none font-bold text-[#22204a]'>Overview</h1>
-        <p className='mb-4 text-lg font-semibold text-[#2f2d57]'>Top Sales Representative</p>
+    <section className='space-y-5 pb-4'>
+      <div className='rounded-[30px] border border-[#eceaf8] bg-white p-6 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
+        <p className='text-sm font-semibold uppercase tracking-[0.24em] text-[#8a84ad]'>Dashboard</p>
+        <h1 className='mt-2 text-3xl font-black tracking-tight text-[#201f47]'>
+          {role === 'admin' ? 'Admin Overview' : role === 'support' ? 'Support Overview' : 'Shipper Overview'}
+        </h1>
+        <p className='mt-2 text-sm text-[#6d6a8a]'>
+          Theo dõi nhanh vận hành đơn hàng, shipment và các chỉ số quan trọng theo quyền hiện tại.
+        </p>
+      </div>
 
-        <div className='space-y-3'>
-          {reps.map((rep) => (
-            <article
-              key={rep.name}
-              className='grid items-center gap-4 rounded-2xl border border-[#eceaf9] px-4 py-3 md:grid-cols-[2fr_1.1fr_1fr_1fr_0.8fr_auto]'
-            >
-              <div className='flex items-center gap-3'>
-                <div className='flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#f59e85] to-[#594ad0] text-sm font-bold text-white'>
-                  {rep.name
-                    .split(' ')
-                    .map((v) => v[0])
-                    .join('')
-                    .slice(0, 2)}
-                </div>
-                <p className='font-semibold text-[#6e6d84]'>{rep.name}</p>
-              </div>
-              <p className='font-extrabold text-[#22204a]'>{rep.sales}</p>
-              <p className='font-medium text-[#9492ab]'>{rep.products}</p>
-              <p className='font-medium text-[#9492ab]'>{rep.premium}</p>
-              <p className={`font-semibold ${rep.rank.includes('Gold') ? 'text-[#f5a14b]' : 'text-[#48b788]'}`}>{rep.rank}</p>
-              <button type='button' className='justify-self-end text-[#7d6de2]'>
-                <MoreVertical className='h-4 w-4' />
-              </button>
-            </article>
-          ))}
+      {dashboardQuery.isLoading && !data ? (
+        <div className='rounded-3xl border border-[#eceaf8] bg-white px-6 py-16 text-center text-sm text-[#7a7697]'>
+          Đang tải dữ liệu dashboard...
         </div>
-      </section>
+      ) : null}
 
-      <section className='grid gap-4 xl:grid-cols-4'>
-        {stats.map((item) => {
-          const Icon = item.icon
-          return (
-            <article key={item.title} className='rounded-2xl border border-[#eceaf9] bg-white p-5'>
-              <div className='mb-3 flex items-start justify-between'>
-                <p className='text-sm font-semibold text-[#9a98b3]'>{item.title}</p>
-                <Icon className='h-5 w-5 text-[#4c437a]' />
-              </div>
-              <p className='text-4xl font-extrabold text-[#22204a]'>{item.value}</p>
-              <div className='mt-2 flex items-center justify-between'>
-                <p className={`text-sm font-semibold ${item.negative ? 'text-[#ea6f75]' : 'text-[#4dbc8f]'}`}>{item.delta}</p>
-                <button type='button' className='text-sm font-semibold text-[#7465d7]'>
-                  {item.action}
-                </button>
-              </div>
-            </article>
-          )
-        })}
-      </section>
+      {dashboardQuery.isError ? (
+        <div className='rounded-3xl border border-[#f3d5db] bg-[#fff3f5] px-6 py-5 text-sm text-[#b13a4c]'>
+          Không thể tải dashboard. Vui lòng thử lại sau.
+        </div>
+      ) : null}
 
-      <section className='grid gap-4 xl:grid-cols-[1.6fr_1fr]'>
-        <article className='rounded-2xl border border-[#eceaf9] bg-white p-5'>
-          <div className='mb-4 flex items-center justify-between'>
-            <p className='text-2xl font-bold text-[#22204a]'>Claims Over the Years</p>
-            <div className='flex items-center gap-4 text-sm font-semibold'>
-              <span className='flex items-center gap-1 text-[#ed94a1]'>
-                <CircleDot className='h-4 w-4 fill-[#ed94a1] text-[#ed94a1]' /> Approved
-              </span>
-              <span className='flex items-center gap-1 text-[#7465d7]'>
-                <CircleDot className='h-4 w-4 fill-[#7465d7] text-[#7465d7]' /> Submitted
+      {data ? <OrderStatsCards items={stats} /> : null}
+
+      {data ? (
+        <div className='grid gap-4 xl:grid-cols-[1.35fr_1fr]'>
+          <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)]'>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-xl font-bold text-[#212047]'>Đơn hàng gần đây</h2>
+              <span className='text-xs font-semibold uppercase tracking-[0.14em] text-[#8f8aac]'>
+                {data.orders.length} records
               </span>
             </div>
-          </div>
 
-          <div className='h-[220px] rounded-xl bg-[#faf9ff] p-3'>
-            <svg viewBox='0 0 760 240' className='h-full w-full'>
-              <path d='M20 185 C100 120, 180 225, 260 170 C340 110, 420 80, 500 178 C580 252, 660 60, 740 160' fill='none' stroke='#ed94a1' strokeWidth='5' strokeLinecap='round' />
-              <path d='M20 195 C100 165, 180 220, 260 162 C340 85, 420 95, 500 182 C580 240, 660 90, 740 152' fill='none' stroke='#6f60d9' strokeWidth='5' strokeLinecap='round' />
-            </svg>
-          </div>
-        </article>
-
-        <article className='relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#5c4ad2] to-[#3e2aac] p-6 text-white'>
-          <div className='absolute inset-0 opacity-20' style={{ backgroundImage: 'radial-gradient(circle at 10% 20%, #ffffff 0, transparent 35%), radial-gradient(circle at 80% 70%, #b39dff 0, transparent 30%)' }} />
-          <div className='relative'>
-            <p className='text-lg font-semibold text-white/90'>Sales team target</p>
-            <p className='mt-2 text-5xl leading-none font-black'>82%</p>
-            <p className='mt-2 text-xl text-white/80'>Achived</p>
-
-            <div className='mt-8 space-y-1'>
-              <p className='text-lg font-semibold text-white/90'>Cleared Que</p>
-              <p className='text-5xl leading-none font-black'>1.4k</p>
-              <p className='text-sm text-white/80'>No. of Bills</p>
+            <div className='space-y-3'>
+              {data.orders.length > 0 ? (
+                data.orders.slice(0, 6).map((order) => (
+                  <div
+                    key={order._id}
+                    className='grid gap-3 rounded-2xl border border-[#eceaf8] px-4 py-3 md:grid-cols-[1.4fr_1fr_auto_auto] md:items-center'
+                  >
+                    <div>
+                      <p className='text-sm font-bold text-[#2a254b]'>#{order._id.slice(-8).toUpperCase()}</p>
+                      <p className='mt-1 text-xs text-[#8f8aac]'>{formatDateTime(order.createdAt)}</p>
+                    </div>
+                    <p className='text-sm font-semibold text-[#2f8a57]'>{formatCurrency(order.final_price)}</p>
+                    <OrderStatusBadge variant='order' status={order.status} />
+                    <OrderStatusBadge variant='payment' status={order.payment_status} />
+                  </div>
+                ))
+              ) : (
+                <p className='rounded-2xl border border-[#eceaf8] px-4 py-6 text-sm text-[#7a7697]'>
+                  Chưa có dữ liệu đơn hàng.
+                </p>
+              )}
             </div>
-          </div>
-        </article>
-      </section>
-    </div>
+          </article>
+
+          <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)]'>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-xl font-bold text-[#212047]'>Shipment Pulse</h2>
+              <Activity className='h-5 w-5 text-[#7465d7]' />
+            </div>
+
+            <div className='space-y-3'>
+              {shipmentStatusRows.map((row) => (
+                <div key={row.label} className='space-y-1'>
+                  <div className='flex items-center justify-between text-sm'>
+                    <span className='font-semibold text-[#4d486c]'>{row.label}</span>
+                    <span className='font-bold text-[#212047]'>{row.value}</span>
+                  </div>
+                  <div className='h-2 rounded-full bg-[#f2f0fb]'>
+                    <div
+                      className={`h-2 rounded-full ${SHIPMENT_BAR_COLORS[row.status]}`}
+                      style={{ width: row.width }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className='mt-5 space-y-2 rounded-2xl border border-[#eceaf8] bg-[#fbfaff] p-4'>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='text-[#6d688a]'>Tổng shipment</span>
+                <span className='font-bold text-[#212047]'>{data.shipmentSummary.totalShipments}</span>
+              </div>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='text-[#6d688a]'>Đang hoạt động</span>
+                <span className='font-bold text-[#212047]'>
+                  {data.shipmentSummary.assignedShipments + data.shipmentSummary.inTransitShipments}
+                </span>
+              </div>
+            </div>
+          </article>
+        </div>
+      ) : null}
+
+      {data ? (
+        <div className='grid gap-4 xl:grid-cols-[1.35fr_1fr]'>
+          <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)]'>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-xl font-bold text-[#212047]'>Shipment gần nhất</h2>
+              <Truck className='h-5 w-5 text-[#2f78d1]' />
+            </div>
+
+            <div className='space-y-3'>
+              {data.shipments.length > 0 ? (
+                data.shipments.slice(0, 6).map((shipment) => (
+                  <div
+                    key={shipment._id}
+                    className='grid gap-3 rounded-2xl border border-[#eceaf8] px-4 py-3 md:grid-cols-[1fr_1.2fr_auto] md:items-center'
+                  >
+                    <div>
+                      <p className='text-sm font-bold text-[#2a254b]'>#{shipment._id.slice(-8).toUpperCase()}</p>
+                      <p className='mt-1 text-xs text-[#8f8aac]'>{formatDateTime(shipment.updatedAt)}</p>
+                    </div>
+                    <p className='line-clamp-2 text-sm text-[#5c5878]'>{getShipmentAddress(shipment)}</p>
+                    <ShipmentStatusBadge status={shipment.status} />
+                  </div>
+                ))
+              ) : (
+                <p className='rounded-2xl border border-[#eceaf8] px-4 py-6 text-sm text-[#7a7697]'>
+                  Chưa có dữ liệu shipment.
+                </p>
+              )}
+            </div>
+          </article>
+
+          <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)]'>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-xl font-bold text-[#212047]'>Operational Insights</h2>
+              <PackageCheck className='h-5 w-5 text-[#6f62cf]' />
+            </div>
+
+            {data.role === 'shipper' ? (
+              <div className='space-y-3'>
+                <div className='rounded-2xl border border-[#eceaf8] bg-[#fbfaff] p-4'>
+                  <p className='text-sm text-[#7a7697]'>Tỷ lệ giao thành công</p>
+                  <p className='mt-2 text-3xl font-black text-[#212047]'>
+                    {data.shipmentSummary.totalShipments > 0
+                      ? `${Math.round((data.shipmentSummary.deliveredShipments / data.shipmentSummary.totalShipments) * 100)}%`
+                      : '0%'}
+                  </p>
+                </div>
+                <div className='rounded-2xl border border-[#eceaf8] bg-[#fbfaff] p-4'>
+                  <p className='text-sm text-[#7a7697]'>Đơn đang xử lý</p>
+                  <p className='mt-2 text-3xl font-black text-[#212047]'>
+                    {data.shipmentSummary.assignedShipments + data.shipmentSummary.inTransitShipments}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className='space-y-3'>
+                <div className='rounded-2xl border border-[#eceaf8] bg-[#fbfaff] p-4'>
+                  <div className='flex items-center justify-between'>
+                    <p className='text-sm text-[#7a7697]'>Feedback chưa xử lý</p>
+                    <AlertTriangle className='h-4 w-4 text-[#d07a1f]' />
+                  </div>
+                  <p className='mt-2 text-3xl font-black text-[#212047]'>
+                    {data.feedbacks.filter((item) => item.status === 'open' || item.status === 'in_progress').length}
+                  </p>
+                </div>
+
+                <div className='rounded-2xl border border-[#eceaf8] bg-[#fbfaff] p-4'>
+                  <div className='flex items-center justify-between'>
+                    <p className='text-sm text-[#7a7697]'>AI Messages</p>
+                    <Bot className='h-4 w-4 text-[#6f62cf]' />
+                  </div>
+                  <p className='mt-2 text-3xl font-black text-[#212047]'>{data.chatbotAnalytics?.totalMessages ?? 0}</p>
+                  <p className='mt-1 text-xs text-[#8f8aac]'>Users: {data.chatbotAnalytics?.totalUsers ?? 0}</p>
+                </div>
+              </div>
+            )}
+          </article>
+        </div>
+      ) : null}
+    </section>
   )
 }

@@ -169,7 +169,7 @@ export default function BrandsPage() {
             <p className='mt-1 text-sm text-[#7a7697]'>{totalItems} brand(s)</p>
           </div>
 
-          <div className='relative'>
+          <div className='relative w-full md:w-auto'>
             <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
             <input
               value={search}
@@ -179,14 +179,14 @@ export default function BrandsPage() {
               }}
               type='text'
               placeholder='Search brand...'
-              className='h-11 w-64 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35 md:w-64'
             />
           </div>
         </div>
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8]'>
+            <table className='min-w-[720px] divide-y divide-[#eceaf8] md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
                 <tr>
                   <th className='px-4 py-4'>Brand</th>

@@ -160,7 +160,7 @@ export default function ProductPromotionsPage() {
 
               return (
                 <div key={item._id} className='rounded-2xl border border-[#eceaf8] px-4 py-3'>
-                  <div className='flex flex-wrap items-center justify-between gap-3'>
+                  <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                     <div>
                       <p className='text-sm font-bold text-[#2a254b]'>
                         {typeof item.product_id === 'string'

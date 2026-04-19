@@ -201,14 +201,14 @@ export default function FeedbackTicketsPage() {
       <OrderStatsCards items={stats} />
 
       <div className='rounded-[30px] border border-[#eceaf8] bg-white p-5 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
-        <div className='flex flex-wrap items-center justify-between gap-3'>
+        <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
           <div>
             <h2 className='text-xl font-bold text-[#212047]'>Ticket Queue</h2>
             <p className='mt-1 text-sm text-[#7a7697]'>{totalItems} ticket(s) found</p>
           </div>
 
-          <div className='flex flex-wrap items-center gap-3'>
-            <div className='relative'>
+          <div className='grid w-full gap-3 md:flex md:w-auto md:flex-wrap md:items-center'>
+            <div className='relative w-full md:w-auto'>
               <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
               <input
                 value={search}
@@ -218,7 +218,7 @@ export default function FeedbackTicketsPage() {
                 }}
                 type='text'
                 placeholder='Search ticket, reporter...'
-                className='h-11 w-72 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none'
+                className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none md:w-72'
               />
             </div>
 
@@ -228,7 +228,7 @@ export default function FeedbackTicketsPage() {
                 setStatusFilter(event.target.value as 'all' | FeedbackStatus)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto'
             >
               {STATUS_OPTIONS.map((status) => (
                 <option key={status} value={status}>
@@ -243,7 +243,7 @@ export default function FeedbackTicketsPage() {
                 setPriorityFilter(event.target.value as 'all' | FeedbackPriority)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto'
             >
               {PRIORITY_OPTIONS.map((priority) => (
                 <option key={priority} value={priority}>
@@ -256,7 +256,7 @@ export default function FeedbackTicketsPage() {
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8]'>
+            <table className='min-w-[960px] divide-y divide-[#eceaf8] md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
                 <tr>
                   <th className='px-4 py-4'>Ticket</th>

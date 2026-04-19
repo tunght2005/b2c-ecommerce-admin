@@ -502,13 +502,13 @@ export default function AttributesVariantsPage() {
       </div>
 
       <div className='rounded-[30px] border border-[#eceaf8] bg-white p-5 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
-        <div className='flex flex-wrap items-center justify-between gap-3'>
+        <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
           <div>
             <h2 className='text-xl font-bold text-[#212047]'>Variants</h2>
             <p className='mt-1 text-sm text-[#7a7697]'>Chọn sản phẩm để xem và quản lý variants</p>
           </div>
 
-          <div className='flex items-center gap-3'>
+          <div className='grid w-full gap-3 md:flex md:w-auto md:flex-wrap md:items-center'>
             <select
               value={selectedProductId}
               onChange={(event) => {
@@ -516,7 +516,7 @@ export default function AttributesVariantsPage() {
                 setSelectedProductId(nextProductId)
                 updateAutoSku(nextProductId, variantForm.attributes)
               }}
-              className='h-11 min-w-64 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm outline-none'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm outline-none md:w-64'
             >
               <option value=''>Select product</option>
               {productsOptions.map((product) => (
@@ -530,7 +530,7 @@ export default function AttributesVariantsPage() {
               <Button
                 type='button'
                 onClick={openCreateVariant}
-                className='inline-flex h-11 items-center gap-2 rounded-full bg-[#6f62cf] px-5 text-sm font-semibold text-white'
+                className='inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#6f62cf] px-5 text-sm font-semibold text-white md:w-auto'
               >
                 <Plus className='h-4 w-4' />
                 Add Variant
@@ -541,7 +541,7 @@ export default function AttributesVariantsPage() {
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8]'>
+            <table className='min-w-[840px] divide-y divide-[#eceaf8] md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
                 <tr>
                   <th className='px-4 py-4'>SKU</th>

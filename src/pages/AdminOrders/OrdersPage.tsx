@@ -306,8 +306,8 @@ export default function OrdersPage() {
             </p>
           </div>
 
-          <div className='flex flex-wrap items-center gap-3'>
-            <div className='relative'>
+          <div className='grid w-full gap-3 md:flex md:w-auto md:flex-wrap md:items-center'>
+            <div className='relative w-full md:w-auto'>
               <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
               <input
                 value={search}
@@ -317,7 +317,7 @@ export default function OrdersPage() {
                 }}
                 type='text'
                 placeholder='Search by order id...'
-                className='h-11 w-64 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35'
+                className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35 md:w-64'
               />
             </div>
 
@@ -327,7 +327,7 @@ export default function OrdersPage() {
                 setStatusFilter(event.target.value as 'all' | OrderStatus)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto'
             >
               {ORDER_STATUS_OPTIONS.map((status) => (
                 <option key={status} value={status}>
@@ -342,7 +342,7 @@ export default function OrdersPage() {
                 setPaymentFilter(event.target.value as 'all' | PaymentStatus)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto'
             >
               {PAYMENT_STATUS_OPTIONS.map((status) => (
                 <option key={status} value={status}>
@@ -361,7 +361,7 @@ export default function OrdersPage() {
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8]'>
+            <table className='min-w-[980px] divide-y divide-[#eceaf8] md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
                 <tr>
                   <th className='px-4 py-4'>Order ID</th>

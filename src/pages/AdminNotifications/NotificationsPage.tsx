@@ -235,8 +235,8 @@ export default function NotificationsPage() {
                   item.is_read ? 'border-[#eceaf8] bg-white' : 'border-[#d8edff] bg-[#f4faff]'
                 }`}
               >
-                <div className='flex flex-wrap items-center justify-between gap-3'>
-                  <div className='flex items-center gap-2'>
+                <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+                  <div className='flex flex-wrap items-center gap-2'>
                     <p className='text-sm font-semibold text-[#2a254b]'>{item.title}</p>
                     <span className='inline-flex h-6 items-center rounded-full border border-[#e6defa] bg-[#f6f2ff] px-2 text-[10px] font-semibold uppercase text-[#6f62cf]'>
                       {item.category || 'system'}
@@ -262,7 +262,7 @@ export default function NotificationsPage() {
       {isCreateModalOpen ? (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-[#1f1b3f]/35 px-4'>
           <div className='w-full max-w-2xl rounded-3xl border border-[#eceaf8] bg-white p-6 shadow-[0_24px_64px_rgba(20,17,48,0.25)]'>
-            <div className='mb-4 flex items-center justify-between'>
+            <div className='mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
               <h2 className='text-xl font-bold text-[#212047]'>Tạo thông báo marketing</h2>
               <button
                 type='button'

@@ -278,7 +278,7 @@ export default function ReviewsPage() {
             ) : filteredReviews.length > 0 ? (
               filteredReviews.map((review) => (
                 <div key={review._id} className='rounded-2xl border border-[#eceaf8] px-4 py-3 dark:border-slate-700'>
-                  <div className='flex items-center justify-between gap-3'>
+                  <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                     <p className='text-sm font-semibold text-[#2a254b] dark:text-slate-100'>
                       {typeof review.user_id === 'object'
                         ? review.user_id.username || review.user_id.email

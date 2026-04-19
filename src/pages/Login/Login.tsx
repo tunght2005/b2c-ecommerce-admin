@@ -75,8 +75,8 @@ export default function Login() {
         className='mx-auto grid min-h-[calc(100vh-24px)] overflow-hidden rounded-3xl border-[4px] border-[#3f3b5b] shadow-[0_30px_80px_rgba(25,20,50,0.38)] lg:min-h-[calc(100vh-48px)] lg:grid-cols-[60%_40%]'
         style={{ background: 'linear-gradient(to right, #f4f4f6 0 60%, #ffede1 60% 100%)' }}
       >
-        <div className='relative z-20 grid place-items-center p-4 sm:p-6'>
-          <div className='w-full max-w-[360px] rounded-2xl bg-white/85 px-5 py-9 shadow-[0_24px_45px_rgba(0,0,0,0.09)] sm:px-9 sm:py-12'>
+        <div className='relative z-20 grid place-items-center p-4 sm:p-6 lg:p-8'>
+          <div className='w-full max-w-[380px] rounded-2xl bg-white/85 px-5 py-9 shadow-[0_24px_45px_rgba(0,0,0,0.09)] sm:px-9 sm:py-12'>
             <div className='mb-2 flex flex-col items-center text-center'>
               <img src={logo} alt='Logo' className='h-12 w-auto object-contain' />
               <p className='mt-6 text-sm text-[#9d9da8]'>Chào mừng bạn đến trang quản lý !!!</p>
@@ -153,7 +153,7 @@ export default function Login() {
           </div>
         </div>
 
-        <div className='relative z-10 flex min-h-[290px] items-center justify-center overflow-hidden bg-[#FFEDE1] p-5 lg:min-h-0 lg:items-end lg:bg-transparent lg:p-6'>
+        <div className='relative z-10 flex min-h-[220px] items-center justify-center overflow-hidden bg-[#FFEDE1] p-4 sm:min-h-[260px] lg:min-h-0 lg:items-end lg:bg-transparent lg:p-6'>
           <div
             className='pointer-events-none absolute inset-0 z-0 opacity-40'
             style={{
@@ -161,7 +161,7 @@ export default function Login() {
                 'repeating-linear-gradient(to right, transparent 0, transparent 40px, rgba(255,206,174,0.9) 40px, rgba(255,206,174,0.9) 42px)'
             }}
           />
-          <div className='relative z-10 w-[92%] max-w-[440px] lg:translate-x-[30px] right-25'>
+          <div className='relative z-10 w-[88%] max-w-[440px] lg:translate-x-[30px]'>
             <img src={loginIllustration} alt='Login illustration' className='h-auto w-full object-contain' />
           </div>
         </div>

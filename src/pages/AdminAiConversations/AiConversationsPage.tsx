@@ -201,14 +201,14 @@ export default function AiConversationsPage() {
               <p className='mt-1 text-sm text-[#7a7697]'>{filteredHistory.length} record(s)</p>
             </div>
 
-            <div className='relative'>
+            <div className='relative w-full md:w-auto'>
               <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 type='text'
                 placeholder='Search message...'
-                className='h-11 w-72 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none'
+                className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none md:w-72'
               />
             </div>
           </div>

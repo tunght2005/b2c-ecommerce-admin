@@ -163,11 +163,11 @@ export default function FeedbackRepliesPage() {
               replies.length > 0 ? (
                 replies.map((reply) => (
                   <article key={reply._id} className='rounded-2xl border border-[#eceaf8] bg-white p-4'>
-                    <div className='flex items-center justify-between gap-3'>
+                    <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                       <p className='text-sm font-bold text-[#28244f]'>
                         {getReplyAuthorName(reply.user_id as FeedbackEntity['user_id'])}
                       </p>
-                      <div className='flex items-center gap-2'>
+                      <div className='flex flex-wrap items-center gap-2'>
                         {reply.is_internal ? (
                           <span className='inline-flex items-center gap-1 rounded-full border border-[#f1ddc8] bg-[#fff5ea] px-2.5 py-1 text-xs font-semibold text-[#b0732e]'>
                             <Shield className='h-3.5 w-3.5' /> Internal

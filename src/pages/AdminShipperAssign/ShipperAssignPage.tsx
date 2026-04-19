@@ -218,13 +218,13 @@ export default function ShipperAssignPage() {
       <OrderStatsCards items={stats} />
 
       <div className='rounded-[30px] border border-[#eceaf8] bg-white p-5 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
-        <div className='flex flex-wrap items-center justify-between gap-3'>
+        <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
           <div>
             <h2 className='text-xl font-bold text-[#212047]'>Confirmed Orders Waiting for Assignment</h2>
             <p className='mt-1 text-sm text-[#7a7697]'>{totalItems} order(s) ready</p>
           </div>
 
-          <div className='relative'>
+          <div className='relative w-full md:w-auto'>
             <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
             <input
               value={search}
@@ -234,14 +234,14 @@ export default function ShipperAssignPage() {
               }}
               type='text'
               placeholder='Search order, buyer...'
-              className='h-11 w-72 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35 md:w-72'
             />
           </div>
         </div>
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8]'>
+            <table className='min-w-[960px] divide-y divide-[#eceaf8] md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
                 <tr>
                   <th className='px-4 py-4'>Order</th>

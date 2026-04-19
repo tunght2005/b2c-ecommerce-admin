@@ -425,7 +425,7 @@ export default function ProductsPage() {
         )}
       </div>
 
-      <div className='grid gap-4 xl:grid-cols-4'>
+      <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>
         {stats.map((item) => (
           <article
             key={item.label}
@@ -433,7 +433,7 @@ export default function ProductsPage() {
           >
             <div className={`mb-4 h-1.5 rounded-full bg-linear-to-r ${item.tone}`} />
             <p className='text-sm font-semibold text-[#8c88ac] dark:text-slate-400'>{item.label}</p>
-            <p className='mt-3 text-4xl font-black text-[#212047] dark:text-slate-100'>{item.value}</p>
+            <p className='mt-3 text-3xl font-black text-[#212047] dark:text-slate-100 sm:text-4xl'>{item.value}</p>
           </article>
         ))}
       </div>
@@ -445,8 +445,8 @@ export default function ProductsPage() {
             <p className='mt-1 text-sm text-[#7a7697] dark:text-slate-400'>{totalItems} product(s) found</p>
           </div>
 
-          <div className='flex flex-wrap items-center gap-3'>
-            <div className='relative'>
+          <div className='grid w-full gap-3 md:flex md:w-auto md:flex-wrap md:items-center'>
+            <div className='relative w-full md:w-auto'>
               <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf] dark:text-slate-500' />
               <input
                 value={search}
@@ -456,7 +456,7 @@ export default function ProductsPage() {
                 }}
                 type='text'
                 placeholder='Search product...'
-                className='h-11 w-64 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/25'
+                className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35 md:w-64 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/25'
               />
             </div>
 
@@ -466,7 +466,7 @@ export default function ProductsPage() {
                 setStatusFilter(event.target.value as 'all' | 'active' | 'inactive')
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
             >
               <option value='all'>All status</option>
               <option value='active'>active</option>
@@ -479,7 +479,7 @@ export default function ProductsPage() {
                 setBrandFilter(event.target.value)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
             >
               <option value='all'>All brands</option>
               {brands.map((brand) => (
@@ -495,7 +495,7 @@ export default function ProductsPage() {
                 setCategoryFilter(event.target.value)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
             >
               <option value='all'>All categories</option>
               {categories.map((category) => (
@@ -509,7 +509,7 @@ export default function ProductsPage() {
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8] dark:border-slate-700'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8] dark:divide-slate-700'>
+            <table className='min-w-[920px] divide-y divide-[#eceaf8] dark:divide-slate-700 md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e] dark:bg-slate-950 dark:text-slate-400'>
                 <tr>
                   <th className='cursor-pointer px-4 py-4' onClick={() => toggleSort('name')}>

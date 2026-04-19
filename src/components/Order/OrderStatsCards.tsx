@@ -11,7 +11,7 @@ interface OrderStatsCardsProps {
 
 export default function OrderStatsCards({ items }: OrderStatsCardsProps) {
   return (
-    <div className='grid gap-4 xl:grid-cols-4'>
+    <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>
       {items.map((item) => (
         <article
           key={item.label}
@@ -19,7 +19,7 @@ export default function OrderStatsCards({ items }: OrderStatsCardsProps) {
         >
           <div className={`mb-4 h-1.5 rounded-full bg-gradient-to-r ${item.tone}`} />
           <p className='text-sm font-semibold text-[#8c88ac]'>{item.label}</p>
-          <p className='mt-3 text-4xl font-black text-[#212047]'>{item.value}</p>
+          <p className='mt-3 text-3xl font-black text-[#212047] sm:text-4xl'>{item.value}</p>
           {item.helper ? <p className='mt-2 text-xs text-[#8f8aac]'>{item.helper}</p> : null}
         </article>
       ))}

@@ -389,7 +389,7 @@ export default function VouchersPage() {
             ) : filteredVouchers.length > 0 ? (
               filteredVouchers.map((item) => (
                 <div key={item._id} className='rounded-2xl border border-[#eceaf8] px-4 py-3'>
-                  <div className='flex flex-wrap items-center justify-between gap-3'>
+                  <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                     <div>
                       <p className='text-sm font-bold text-[#2a254b]'>{item.code}</p>
                       <p className='mt-1 text-xs text-[#8f8aac]'>
@@ -400,7 +400,7 @@ export default function VouchersPage() {
                       </p>
                     </div>
 
-                    <div className='flex items-center gap-3'>
+                    <div className='flex flex-wrap items-center gap-3'>
                       <span className='rounded-full border border-[#e7dcff] bg-[#f4efff] px-3 py-1 text-xs font-semibold text-[#6a4cc2]'>
                         {item.status}
                       </span>
@@ -424,7 +424,7 @@ export default function VouchersPage() {
       {isFormModalOpen ? (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-[#1f1b3f]/35 px-4'>
           <div className='w-full max-w-2xl rounded-3xl border border-[#eceaf8] bg-white p-6 shadow-[0_24px_64px_rgba(20,17,48,0.25)]'>
-            <div className='mb-4 flex items-center justify-between'>
+            <div className='mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
               <h2 className='text-xl font-bold text-[#212047]'>{editingId ? 'Cập nhật Voucher' : 'Tạo Voucher'}</h2>
               <button
                 type='button'

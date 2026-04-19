@@ -202,17 +202,17 @@ export default function TrackingLogsPage() {
 
       <div className='grid gap-5 xl:grid-cols-[1.1fr_1.4fr]'>
         <div className='rounded-[30px] border border-[#eceaf8] bg-white p-5 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
-          <div className='flex items-center justify-between gap-3'>
+          <div className='flex flex-wrap items-center justify-between gap-3'>
             <div>
               <h2 className='text-xl font-bold text-[#212047]'>Shipments</h2>
               <p className='mt-1 text-sm text-[#7a7697]'>{filteredShipments.length} found</p>
             </div>
-            <div className='relative'>
+            <div className='relative w-full md:w-auto'>
               <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                className='h-11 w-64 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none'
+                className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none md:w-64'
                 placeholder='Search shipment / order / buyer...'
               />
             </div>
@@ -232,7 +232,7 @@ export default function TrackingLogsPage() {
             </select>
           </div>
 
-          <div className='mt-4 max-h-[640px] overflow-auto space-y-2 pr-1'>
+          <div className='mt-4 space-y-2 overflow-x-hidden md:max-h-[640px] md:overflow-y-auto md:pr-1'>
             {filteredShipments.length > 0 ? (
               filteredShipments.map((shipment) => (
                 <button
@@ -246,11 +246,11 @@ export default function TrackingLogsPage() {
                   }`}
                 >
                   <div className='flex items-start justify-between gap-3'>
-                    <div>
+                    <div className='min-w-0'>
                       <p className='text-sm font-bold text-[#28244f] dark:text-slate-100'>
                         #{shipment._id.slice(-8).toUpperCase()}
                       </p>
-                      <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>
+                      <p className='mt-1 break-all text-xs text-[#8f8aac] dark:text-slate-400'>
                         Order:{' '}
                         {typeof shipment.order_id === 'object' && shipment.order_id
                           ? shipment.order_id._id.slice(-8).toUpperCase()
@@ -258,12 +258,14 @@ export default function TrackingLogsPage() {
                               .slice(-8)
                               .toUpperCase()}
                       </p>
-                      <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>Buyer: {getBuyer(shipment)}</p>
+                      <p className='mt-1 break-all text-xs text-[#8f8aac] dark:text-slate-400'>
+                        Buyer: {getBuyer(shipment)}
+                      </p>
                     </div>
                     <ShipmentStatusBadge status={shipment.status} />
                   </div>
-                  <div className='mt-3 flex items-center justify-between text-xs text-[#7a7697] dark:text-slate-400'>
-                    <span>Shipper: {getShipper(shipment)}</span>
+                  <div className='mt-3 flex flex-col items-start gap-1 text-xs text-[#7a7697] dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between'>
+                    <span className='break-all'>Shipper: {getShipper(shipment)}</span>
                     <span>
                       <Clock3 className='inline h-3.5 w-3.5' /> {formatDateTime(shipment.updatedAt)}
                     </span>
@@ -282,10 +284,12 @@ export default function TrackingLogsPage() {
           {selectedShipment ? (
             <>
               <div className='flex flex-wrap items-start justify-between gap-3'>
-                <div>
+                <div className='min-w-0'>
                   <p className='text-sm font-semibold uppercase tracking-[0.24em] text-[#8a84ad]'>Selected Shipment</p>
-                  <h2 className='mt-2 text-2xl font-black tracking-tight text-[#201f47]'>{selectedShipment._id}</h2>
-                  <p className='mt-1 text-sm text-[#7a7697]'>
+                  <h2 className='mt-2 break-all text-xl font-black tracking-tight text-[#201f47] sm:text-2xl'>
+                    {selectedShipment._id}
+                  </h2>
+                  <p className='mt-1 break-all text-sm text-[#7a7697]'>
                     Order{' '}
                     {typeof selectedShipment.order_id === 'object' && selectedShipment.order_id
                       ? selectedShipment.order_id._id
@@ -336,36 +340,57 @@ export default function TrackingLogsPage() {
               ) : null}
 
               <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
-                <table className='min-w-full divide-y divide-[#eceaf8]'>
-                  <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
-                    <tr>
-                      <th className='px-4 py-3'>Status</th>
-                      <th className='px-4 py-3'>Location</th>
-                      <th className='px-4 py-3'>Note</th>
-                      <th className='px-4 py-3'>Created</th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y divide-[#f0edf8] bg-white'>
-                    {(logsQuery.data ?? []).length > 0 ? (
-                      (logsQuery.data ?? []).map((log) => (
-                        <tr key={log._id}>
-                          <td className='px-4 py-3'>
+                {(logsQuery.data ?? []).length > 0 ? (
+                  <>
+                    <div className='space-y-2 p-3 md:hidden'>
+                      {(logsQuery.data ?? []).map((log) => (
+                        <article key={log._id} className='rounded-2xl border border-[#eceaf8] bg-white p-3'>
+                          <div className='flex items-start justify-between gap-2'>
                             <ShipmentStatusBadge status={log.status as ShipmentStatus} />
-                          </td>
-                          <td className='px-4 py-3 text-sm text-[#2d2950]'>{log.location || 'N/A'}</td>
-                          <td className='px-4 py-3 text-sm text-[#5f5a7a]'>{log.note || 'No note'}</td>
-                          <td className='px-4 py-3 text-sm text-[#5f5a7a]'>{formatDateTime(log.createdAt)}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={4} className='px-4 py-10 text-center text-sm text-[#7a7697]'>
-                          No tracking logs available.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                            <span className='text-xs text-[#7a7697]'>{formatDateTime(log.createdAt)}</span>
+                          </div>
+                          <p className='mt-2 text-sm text-[#2d2950]'>
+                            <span className='font-semibold'>Location:</span> {log.location || 'N/A'}
+                          </p>
+                          <p className='mt-1 break-words text-sm text-[#5f5a7a]'>
+                            <span className='font-semibold'>Note:</span> {log.note || 'No note'}
+                          </p>
+                        </article>
+                      ))}
+                    </div>
+
+                    <div className='hidden w-full overflow-x-auto md:block'>
+                      <table className='w-full min-w-[680px] divide-y divide-[#eceaf8]'>
+                        <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
+                          <tr>
+                            <th className='px-4 py-3'>Status</th>
+                            <th className='px-4 py-3'>Location</th>
+                            <th className='px-4 py-3'>Note</th>
+                            <th className='px-4 py-3'>Created</th>
+                          </tr>
+                        </thead>
+                        <tbody className='divide-y divide-[#f0edf8] bg-white'>
+                          {(logsQuery.data ?? []).map((log) => (
+                            <tr key={log._id}>
+                              <td className='px-4 py-3'>
+                                <ShipmentStatusBadge status={log.status as ShipmentStatus} />
+                              </td>
+                              <td className='px-4 py-3 text-sm text-[#2d2950]'>{log.location || 'N/A'}</td>
+                              <td className='max-w-[240px] break-words px-4 py-3 text-sm text-[#5f5a7a]'>
+                                {log.note || 'No note'}
+                              </td>
+                              <td className='whitespace-nowrap px-4 py-3 text-sm text-[#5f5a7a]'>
+                                {formatDateTime(log.createdAt)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                ) : (
+                  <div className='px-4 py-10 text-center text-sm text-[#7a7697]'>No tracking logs available.</div>
+                )}
               </div>
 
               <div className='mt-4 rounded-2xl border border-[#eceaf8] p-4'>

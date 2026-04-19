@@ -185,20 +185,20 @@ export default function ReturnsPage() {
       <OrderStatsCards items={stats} />
 
       <div className='rounded-[30px] border border-[#eceaf8] bg-white p-5 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
-        <div className='flex flex-wrap items-center justify-between gap-3'>
+        <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
           <div>
             <h2 className='text-xl font-bold text-[#212047]'>Return Requests</h2>
             <p className='mt-1 text-sm text-[#7a7697]'>{totalItems} request(s) tracked</p>
           </div>
 
-          <div className='flex items-center gap-2'>
+          <div className='grid w-full gap-2 md:flex md:w-auto md:flex-wrap md:items-center'>
             <select
               value={statusFilter}
               onChange={(event) => {
                 setStatusFilter(event.target.value as ReturnStatus | 'all')
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none md:w-auto'
             >
               {RETURN_STATUSES.map((status) => (
                 <option key={status} value={status}>
@@ -207,14 +207,14 @@ export default function ReturnsPage() {
               ))}
             </select>
 
-            <div className='relative'>
+            <div className='relative w-full md:w-auto'>
               <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 type='text'
                 placeholder='Search request...'
-                className='h-11 w-72 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none'
+                className='h-11 w-full rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none md:w-72'
               />
             </div>
           </div>
@@ -222,7 +222,7 @@ export default function ReturnsPage() {
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8]'>
+            <table className='min-w-[980px] divide-y divide-[#eceaf8] md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
                 <tr>
                   <th className='px-4 py-4'>Request</th>

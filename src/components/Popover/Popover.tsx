@@ -1,4 +1,4 @@
-import { useState, useRef, useId, type ElementType } from 'react'
+import { useState, useId, type ElementType, type ReactNode } from 'react'
 import {
   useFloating,
   FloatingPortal,
@@ -18,8 +18,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Props {
-  children: any
-  renderPopover: React.ReactNode
+  children: ReactNode | ((state: { open: boolean }) => ReactNode)
+  renderPopover: ReactNode
   className?: string
   as?: ElementType
   initialOpen?: boolean
@@ -35,11 +35,11 @@ export default function Popover({
   placement = 'bottom-end'
 }: Props) {
   const [open, setOpen] = useState(initialOpen || false)
-  const arrowRef = useRef<HTMLElement>(null)
+  const [arrowElement, setArrowElement] = useState<HTMLElement | null>(null)
   const data = useFloating({
     open,
     onOpenChange: setOpen,
-    middleware: [offset(10), flip(), shift(), arrow({ element: arrowRef })],
+    middleware: [offset(10), flip(), shift(), arrow({ element: arrowElement })],
     whileElementsMounted: autoUpdate,
     transform: false,
     placement
@@ -52,13 +52,13 @@ export default function Popover({
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role])
   const id = useId()
   return (
-    <Element className={className} ref={refs.setReference} {...getReferenceProps()}>
+    <Element className={className} ref={(node) => refs.setReference(node)} {...getReferenceProps()}>
       {typeof children === 'function' ? children({ open }) : children}
       <FloatingPortal id={id}>
         <AnimatePresence>
           {open && (
             <motion.div
-              ref={refs.setFloating}
+              ref={(node) => refs.setFloating(node)}
               style={{
                 transformOrigin: `${data.middlewareData.arrow?.x}px top`,
                 ...floatingStyles
@@ -70,7 +70,7 @@ export default function Popover({
               transition={{ duration: 0.2 }}
             >
               <span
-                ref={arrowRef}
+                ref={setArrowElement}
                 className='absolute z-10 translate-y-[-95%] border-[11px] border-x-transparent border-t-transparent border-b-white'
                 style={{
                   left: data.middlewareData.arrow?.x,

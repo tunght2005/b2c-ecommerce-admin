@@ -92,28 +92,28 @@ export interface SimpleSuccessResponse<T> {
   data: T
 }
 
-export interface ReturnPoliciesResponse extends SimpleSuccessResponse<ReturnPolicyEntity[]> {}
-export interface ReturnPolicyMutationResponse extends SimpleSuccessResponse<ReturnPolicyEntity> {}
+export type ReturnPoliciesResponse = SimpleSuccessResponse<ReturnPolicyEntity[]>
+export type ReturnPolicyMutationResponse = SimpleSuccessResponse<ReturnPolicyEntity>
 
-export interface PolicyProductLinkResponse extends SimpleSuccessResponse<PolicyProductLink[]> {}
-export interface PolicyProductLinkMutationResponse extends SimpleSuccessResponse<PolicyProductLink> {}
+export type PolicyProductLinkResponse = SimpleSuccessResponse<PolicyProductLink[]>
+export type PolicyProductLinkMutationResponse = SimpleSuccessResponse<PolicyProductLink>
 
-export interface ReturnsListResponse extends SimpleSuccessResponse<{
+export type ReturnsListResponse = SimpleSuccessResponse<{
   returns: ReturnRequestEntity[]
   pagination: CommonPagination
-}> {}
+}>
 
-export interface ReturnDetailResponse extends SimpleSuccessResponse<ReturnRequestEntity> {}
-export interface ReturnMutationResponse extends SimpleSuccessResponse<ReturnRequestEntity> {}
+export type ReturnDetailResponse = SimpleSuccessResponse<ReturnRequestEntity>
+export type ReturnMutationResponse = SimpleSuccessResponse<ReturnRequestEntity>
 
-export interface EligibleOrderItemsResponse extends SimpleSuccessResponse<{
+export type EligibleOrderItemsResponse = SimpleSuccessResponse<{
   items: EligibleOrderItem[]
   pagination: CommonPagination
-}> {}
+}>
 
-export interface WarrantyListResponse extends SimpleSuccessResponse<{
+export type WarrantyListResponse = SimpleSuccessResponse<{
   records: WarrantyEntity[]
   pagination: CommonPagination
-}> {}
+}>
 
-export interface WarrantyMutationResponse extends SimpleSuccessResponse<WarrantyEntity> {}
+export type WarrantyMutationResponse = SimpleSuccessResponse<WarrantyEntity>

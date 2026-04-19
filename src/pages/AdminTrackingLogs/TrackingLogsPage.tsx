@@ -6,6 +6,7 @@ import { OrderStatusBadge, OrderStatsCards } from '../../components/Order'
 import { ShipmentStatusBadge } from '../../components/Shipment'
 import shipmentApi from '../../apis/shipment.api'
 import { useAuth } from '../../contexts/app.context'
+import type { OrderStatus } from '../../types/order.type'
 import type {
   ShipmentEntity,
   ShipmentTrackingLogEntity,
@@ -108,7 +109,7 @@ export default function TrackingLogsPage() {
     placeholderData: (previousData) => previousData
   })
 
-  const shipments = shipmentsQuery.data?.shipments ?? []
+  const shipments = useMemo(() => shipmentsQuery.data?.shipments ?? [], [shipmentsQuery.data?.shipments])
 
   const filteredShipments = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase()
@@ -327,7 +328,7 @@ export default function TrackingLogsPage() {
                 <div className='mt-4 rounded-2xl border border-[#eceaf8] p-4'>
                   <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Order Status</p>
                   <div className='mt-2'>
-                    <OrderStatusBadge variant='order' status={selectedShipment.order_id.status as any} />
+                    <OrderStatusBadge variant='order' status={selectedShipment.order_id.status as OrderStatus} />
                   </div>
                 </div>
               ) : null}

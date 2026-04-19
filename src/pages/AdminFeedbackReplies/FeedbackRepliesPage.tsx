@@ -59,7 +59,7 @@ export default function FeedbackRepliesPage() {
     }
   })
 
-  const replies = repliesQuery.data ?? []
+  const replies = useMemo(() => repliesQuery.data ?? [], [repliesQuery.data])
 
   const stats = useMemo(() => {
     const internalReplies = replies.filter((item) => item.is_internal).length

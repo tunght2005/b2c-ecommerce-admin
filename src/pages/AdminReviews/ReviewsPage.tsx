@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { MessageSquareText, SlidersHorizontal, Star, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 import productApi from '../../apis/product.api'
-import reviewApi from '../../apis/review.api'
+import reviewApi, { type ReviewEntity } from '../../apis/review.api'
 import CrudActionButtons from '../../components/CrudActionButtons'
 import OrderStatsCards from '../../components/Order/OrderStatsCards'
 import type { Product } from '../../types/product.type'
@@ -23,7 +23,7 @@ export default function ReviewsPage() {
   const [ratingFilter, setRatingFilter] = useState<'all' | '1' | '2' | '3' | '4' | '5'>('all')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
-  const [selectedReview, setSelectedReview] = useState<any | null>(null)
+  const [selectedReview, setSelectedReview] = useState<ReviewEntity | null>(null)
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null)
 
   const productsQuery = useQuery({
@@ -35,27 +35,23 @@ export default function ReviewsPage() {
     placeholderData: (prev) => prev
   })
 
-  useEffect(() => {
-    if (!selectedProductId && productsQuery.data?.length) {
-      const firstId = getProductId(productsQuery.data[0])
-      if (firstId) setSelectedProductId(firstId)
-    }
-  }, [productsQuery.data, selectedProductId])
+  const firstProductId = productsQuery.data?.length ? getProductId(productsQuery.data[0]) : ''
+  const activeProductId = selectedProductId || firstProductId
 
   const reviewsQuery = useQuery({
-    queryKey: ['reviews-by-product', selectedProductId],
+    queryKey: ['reviews-by-product', activeProductId],
     queryFn: async () => {
-      const response = await reviewApi.listByProduct(selectedProductId, { page: 1, limit: 10 })
+      const response = await reviewApi.listByProduct(activeProductId, { page: 1, limit: 10 })
       return response.data.data
     },
-    enabled: Boolean(selectedProductId),
+    enabled: Boolean(activeProductId),
     placeholderData: (prev) => prev
   })
 
   const adminReviewsQuery = useQuery({
-    queryKey: ['reviews-admin', selectedProductId],
+    queryKey: ['reviews-admin', activeProductId],
     queryFn: async () => {
-      const response = await reviewApi.listAdmin({ page: 1, limit: 20, product_id: selectedProductId || undefined })
+      const response = await reviewApi.listAdmin({ page: 1, limit: 20, product_id: activeProductId || undefined })
       return response.data.data
     },
     placeholderData: (prev) => prev
@@ -186,7 +182,7 @@ export default function ReviewsPage() {
                   type='button'
                   onClick={() => productId && setSelectedProductId(productId)}
                   className={`w-full rounded-2xl border px-4 py-3 text-left transition ${
-                    selectedProductId === productId
+                    activeProductId === productId
                       ? 'border-[#d9d3ef] bg-[#f8f6ff]'
                       : 'border-[#eceaf8] bg-white hover:bg-[#fbfaff]'
                   }`}

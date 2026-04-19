@@ -70,8 +70,8 @@ export default function DeliveryStaffPage() {
     }
   })
 
-  const staff = staffQuery.data ?? []
-  const shipperUsers = shipperUsersQuery.data ?? []
+  const staff = useMemo(() => staffQuery.data ?? [], [staffQuery.data])
+  const shipperUsers = useMemo(() => shipperUsersQuery.data ?? [], [shipperUsersQuery.data])
 
   const filteredStaff = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase()

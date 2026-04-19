@@ -64,7 +64,7 @@ export default function PromotionsPage() {
     placeholderData: (prev) => prev
   })
 
-  const promotions = promotionsQuery.data || []
+  const promotions = useMemo(() => promotionsQuery.data ?? [], [promotionsQuery.data])
 
   const filteredPromotions = useMemo(() => {
     return promotions.filter((item) => {
@@ -139,7 +139,7 @@ export default function PromotionsPage() {
     const upcoming7Days = promotions.filter((item) => {
       if (!item.end_date) return false
       const end = new Date(item.end_date).getTime()
-      const now = Date.now()
+      const now = new Date().getTime()
       const sevenDays = 7 * 24 * 60 * 60 * 1000
       return end > now && end - now <= sevenDays
     }).length

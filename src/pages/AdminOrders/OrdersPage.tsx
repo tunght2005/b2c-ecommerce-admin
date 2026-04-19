@@ -159,7 +159,7 @@ export default function OrdersPage() {
     placeholderData: (prev) => prev
   })
 
-  const queryOrders = ordersQuery.data?.orders ?? []
+  const queryOrders = useMemo(() => ordersQuery.data?.orders ?? [], [ordersQuery.data?.orders])
 
   const confirmMutation = useMutation({
     mutationFn: (orderId: string) => orderApi.confirm(orderId),

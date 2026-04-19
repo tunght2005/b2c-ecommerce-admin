@@ -37,8 +37,8 @@ export default function MarketingPage() {
     }
   })
 
-  const promotions = promotionsQuery.data || []
-  const notifications = notificationsQuery.data || []
+  const promotions = useMemo(() => promotionsQuery.data ?? [], [promotionsQuery.data])
+  const notifications = useMemo(() => notificationsQuery.data ?? [], [notificationsQuery.data])
 
   const stats = useMemo(() => {
     const activeCampaigns = promotions.filter((item) => item.status === 'active').length

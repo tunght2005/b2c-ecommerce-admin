@@ -27,7 +27,7 @@ export default function FeedbackRatingsPage() {
     placeholderData: (previousData) => previousData
   })
 
-  const tickets = ticketsQuery.data ?? []
+  const tickets = useMemo(() => ticketsQuery.data ?? [], [ticketsQuery.data])
 
   const priorityBreakdown = useMemo(() => {
     return [

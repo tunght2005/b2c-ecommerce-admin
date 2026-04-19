@@ -9,6 +9,7 @@ import { OrderStatusBadge, OrderStatsCards } from '../../components/Order'
 import { ShipmentStatusBadge } from '../../components/Shipment'
 import shipmentApi from '../../apis/shipment.api'
 import { useAuth } from '../../contexts/app.context'
+import type { OrderStatus } from '../../types/order.type'
 import type { ShipmentEntity, ShipmentStatus, ShipmentSummary } from '../../types/shipment.type'
 import { formatCurrency, formatDateTime } from '../../utils/common'
 
@@ -647,8 +648,7 @@ export default function ShipmentsPage() {
                   <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Order Status</p>
                   <div className='mt-2'>
                     {typeof selectedShipment.order_id === 'object' ? (
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      <OrderStatusBadge variant='order' status={selectedShipment.order_id.status as any} />
+                      <OrderStatusBadge variant='order' status={selectedShipment.order_id.status as OrderStatus} />
                     ) : (
                       <span className='text-sm text-[#6d6a8a]'>N/A</span>
                     )}

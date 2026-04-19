@@ -1,3 +1,3 @@
-import PromotionsPage from "./PromotionsPage"
+import PromotionsPage from './PromotionsPage'
 
 export default PromotionsPage

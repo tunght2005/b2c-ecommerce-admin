@@ -197,27 +197,35 @@ export default function OrderItemsPage() {
                   <th className='px-4 py-4'>Created</th>
                 </tr>
               </thead>
-              <tbody className='divide-y divide-[#f0edf8] bg-white'>
+              <tbody className='divide-y divide-[#f0edf8] bg-white dark:divide-slate-800 dark:bg-slate-900/70'>
                 {ordersQuery.isLoading && !ordersQuery.data ? (
                   <tr>
-                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697] dark:text-slate-400'>
                       Loading order items...
                     </td>
                   </tr>
                 ) : paginatedRows.length > 0 ? (
                   paginatedRows.map((row) => (
-                    <tr key={row.key} className='transition hover:bg-[#fbfaff]'>
+                    <tr key={row.key} className='transition hover:bg-[#fbfaff] dark:hover:bg-slate-800/70'>
                       <td className='px-4 py-4'>
-                        <p className='font-semibold text-[#28244f]'>#{row.orderId.slice(-8).toUpperCase()}</p>
-                        <p className='mt-1 text-xs text-[#8f8aac]'>{row.orderId}</p>
+                        <p className='font-semibold text-[#28244f] dark:text-slate-100'>
+                          #{row.orderId.slice(-8).toUpperCase()}
+                        </p>
+                        <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>{row.orderId}</p>
                       </td>
                       <td className='px-4 py-4'>
-                        <p className='text-sm font-semibold text-[#2d2950]'>{row.variantSku || 'N/A'}</p>
-                        <p className='text-xs text-[#8f8aac]'>{row.variantId || 'Unknown variant'}</p>
+                        <p className='text-sm font-semibold text-[#2d2950] dark:text-slate-100'>
+                          {row.variantSku || 'N/A'}
+                        </p>
+                        <p className='text-xs text-[#8f8aac] dark:text-slate-400'>
+                          {row.variantId || 'Unknown variant'}
+                        </p>
                       </td>
-                      <td className='px-4 py-4 text-sm text-[#2d2950]'>{row.quantity}</td>
-                      <td className='px-4 py-4 text-sm text-[#2d2950]'>{formatCurrency(row.unitPrice)}</td>
-                      <td className='px-4 py-4 text-sm font-semibold text-[#2f8a57]'>
+                      <td className='px-4 py-4 text-sm text-[#2d2950] dark:text-slate-100'>{row.quantity}</td>
+                      <td className='px-4 py-4 text-sm text-[#2d2950] dark:text-slate-100'>
+                        {formatCurrency(row.unitPrice)}
+                      </td>
+                      <td className='px-4 py-4 text-sm font-semibold text-[#2f8a57] dark:text-emerald-300'>
                         {formatCurrency(row.lineTotal)}
                       </td>
                       <td className='px-4 py-4'>
@@ -226,12 +234,14 @@ export default function OrderItemsPage() {
                       <td className='px-4 py-4'>
                         <OrderStatusBadge variant='order' status={row.orderStatus} />
                       </td>
-                      <td className='px-4 py-4 text-sm text-[#5f5a7a]'>{formatDateTime(row.createdAt)}</td>
+                      <td className='px-4 py-4 text-sm text-[#5f5a7a] dark:text-slate-300'>
+                        {formatDateTime(row.createdAt)}
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697] dark:text-slate-400'>
                       No order items found.
                     </td>
                   </tr>
@@ -240,7 +250,7 @@ export default function OrderItemsPage() {
             </table>
           </div>
 
-          <div className='border-t border-[#eceaf8] p-4'>
+          <div className='border-t border-[#eceaf8] p-4 dark:border-slate-700'>
             <Pagination
               totalItems={totalItems}
               currentPage={safePage}

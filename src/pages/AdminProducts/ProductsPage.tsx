@@ -429,25 +429,25 @@ export default function ProductsPage() {
         {stats.map((item) => (
           <article
             key={item.label}
-            className='overflow-hidden rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_40px_rgba(28,24,70,0.06)]'
+            className='overflow-hidden rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_40px_rgba(28,24,70,0.06)] dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-[0_12px_40px_rgba(0,0,0,0.2)]'
           >
             <div className={`mb-4 h-1.5 rounded-full bg-linear-to-r ${item.tone}`} />
-            <p className='text-sm font-semibold text-[#8c88ac]'>{item.label}</p>
-            <p className='mt-3 text-4xl font-black text-[#212047]'>{item.value}</p>
+            <p className='text-sm font-semibold text-[#8c88ac] dark:text-slate-400'>{item.label}</p>
+            <p className='mt-3 text-4xl font-black text-[#212047] dark:text-slate-100'>{item.value}</p>
           </article>
         ))}
       </div>
 
-      <div className='rounded-[30px] border border-[#eceaf8] bg-white p-5 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
+      <div className='rounded-[30px] border border-[#eceaf8] bg-white p-5 shadow-[0_18px_50px_rgba(27,23,64,0.08)] dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-[0_18px_50px_rgba(0,0,0,0.22)]'>
         <div className='flex flex-wrap items-center justify-between gap-3'>
           <div>
-            <h2 className='text-xl font-bold text-[#212047]'>Product List</h2>
-            <p className='mt-1 text-sm text-[#7a7697]'>{totalItems} product(s) found</p>
+            <h2 className='text-xl font-bold text-[#212047] dark:text-slate-100'>Product List</h2>
+            <p className='mt-1 text-sm text-[#7a7697] dark:text-slate-400'>{totalItems} product(s) found</p>
           </div>
 
           <div className='flex flex-wrap items-center gap-3'>
             <div className='relative'>
-              <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf]' />
+              <Search className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#9d98bf] dark:text-slate-500' />
               <input
                 value={search}
                 onChange={(event) => {
@@ -456,7 +456,7 @@ export default function ProductsPage() {
                 }}
                 type='text'
                 placeholder='Search product...'
-                className='h-11 w-64 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35'
+                className='h-11 w-64 rounded-full border border-[#e5e1f3] bg-[#fbfaff] pr-4 pl-10 text-sm text-[#2d2950] outline-none transition focus:border-[#7a6ae0] focus:ring-2 focus:ring-[#b7abe6]/35 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/25'
               />
             </div>
 
@@ -466,7 +466,7 @@ export default function ProductsPage() {
                 setStatusFilter(event.target.value as 'all' | 'active' | 'inactive')
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
             >
               <option value='all'>All status</option>
               <option value='active'>active</option>
@@ -479,7 +479,7 @@ export default function ProductsPage() {
                 setBrandFilter(event.target.value)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
             >
               <option value='all'>All brands</option>
               {brands.map((brand) => (
@@ -495,7 +495,7 @@ export default function ProductsPage() {
                 setCategoryFilter(event.target.value)
                 setCurrentPage(1)
               }}
-              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none'
+              className='h-11 rounded-full border border-[#e5e1f3] bg-[#fbfaff] px-4 text-sm text-[#2d2950] outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
             >
               <option value='all'>All categories</option>
               {categories.map((category) => (
@@ -507,10 +507,10 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
+        <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8] dark:border-slate-700'>
           <div className='overflow-x-auto'>
-            <table className='min-w-full divide-y divide-[#eceaf8]'>
-              <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
+            <table className='min-w-full divide-y divide-[#eceaf8] dark:divide-slate-700'>
+              <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e] dark:bg-slate-950 dark:text-slate-400'>
                 <tr>
                   <th className='cursor-pointer px-4 py-4' onClick={() => toggleSort('name')}>
                     Product
@@ -526,24 +526,28 @@ export default function ProductsPage() {
                   <th className='px-4 py-4 text-right'>Actions</th>
                 </tr>
               </thead>
-              <tbody className='divide-y divide-[#f0edf8] bg-white'>
+              <tbody className='divide-y divide-[#f0edf8] bg-white dark:divide-slate-800 dark:bg-slate-900/70'>
                 {productsQuery.isLoading && !productsQuery.data ? (
                   <tr>
-                    <td colSpan={6} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={6} className='px-4 py-16 text-center text-sm text-[#7a7697] dark:text-slate-400'>
                       Loading products...
                     </td>
                   </tr>
                 ) : paginatedProducts.length > 0 ? (
                   paginatedProducts.map((product) => (
-                    <tr key={product.id} className='transition hover:bg-[#fbfaff]'>
+                    <tr key={product.id} className='transition hover:bg-[#fbfaff] dark:hover:bg-slate-800/70'>
                       <td className='px-4 py-4'>
                         <div className='space-y-1'>
-                          <p className='font-semibold text-[#25224a]'>{product.name}</p>
-                          <p className='text-xs text-[#8d88ab]'>{product.slug || 'No slug'}</p>
+                          <p className='font-semibold text-[#25224a] dark:text-slate-100'>{product.name}</p>
+                          <p className='text-xs text-[#8d88ab] dark:text-slate-400'>{product.slug || 'No slug'}</p>
                         </div>
                       </td>
-                      <td className='px-4 py-4 text-sm text-[#5f5a7a]'>{getRefName(product.brand_id)}</td>
-                      <td className='px-4 py-4 text-sm text-[#5f5a7a]'>{getRefName(product.category_id)}</td>
+                      <td className='px-4 py-4 text-sm text-[#5f5a7a] dark:text-slate-300'>
+                        {getRefName(product.brand_id)}
+                      </td>
+                      <td className='px-4 py-4 text-sm text-[#5f5a7a] dark:text-slate-300'>
+                        {getRefName(product.category_id)}
+                      </td>
                       <td className='px-4 py-4'>
                         <span
                           className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
@@ -555,7 +559,9 @@ export default function ProductsPage() {
                           {product.status}
                         </span>
                       </td>
-                      <td className='px-4 py-4 text-sm text-[#5f5a7a]'>{formatDate(product.createdAt || '')}</td>
+                      <td className='px-4 py-4 text-sm text-[#5f5a7a] dark:text-slate-300'>
+                        {formatDate(product.createdAt || '')}
+                      </td>
                       <td className='px-4 py-4'>
                         <CrudActionButtons
                           onView={() => openDetailModal(product)}
@@ -569,11 +575,11 @@ export default function ProductsPage() {
                   <tr>
                     <td colSpan={6} className='px-4 py-12 text-center'>
                       <div className='mx-auto max-w-sm space-y-3'>
-                        <div className='mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f3f0ff] text-[#6f62cf]'>
+                        <div className='mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f3f0ff] text-[#6f62cf] dark:bg-slate-900 dark:text-indigo-300'>
                           <Boxes className='h-6 w-6' />
                         </div>
-                        <p className='text-lg font-semibold text-[#25224a]'>No products found</p>
-                        <p className='text-sm text-[#7d7899]'>
+                        <p className='text-lg font-semibold text-[#25224a] dark:text-slate-100'>No products found</p>
+                        <p className='text-sm text-[#7d7899] dark:text-slate-400'>
                           Try changing keyword, status, brand, or category filters.
                         </p>
                         <Button
@@ -597,7 +603,7 @@ export default function ProductsPage() {
             </table>
           </div>
 
-          <div className='border-t border-[#eceaf8] p-4'>
+          <div className='border-t border-[#eceaf8] p-4 dark:border-slate-700'>
             <Pagination
               totalItems={totalItems}
               currentPage={safePage}

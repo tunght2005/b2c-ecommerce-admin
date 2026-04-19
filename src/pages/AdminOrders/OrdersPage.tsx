@@ -433,7 +433,7 @@ export default function OrdersPage() {
                               <button
                                 type='button'
                                 onClick={() => setDeleteTarget(order)}
-                                className='inline-flex h-9 items-center gap-1.5 rounded-full border border-[#f3ccd2] px-3 text-xs font-semibold text-[#c84455] transition hover:bg-[#ffe0e6]'
+                                className='inline-flex h-9 items-center gap-1.5 rounded-full border border-[#f3ccd2] px-3 text-xs font-semibold text-[#c84455] transition hover:bg-[#ffe0e6] dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/40'
                               >
                                 <Trash2 className='h-4 w-4' /> Delete
                               </button>
@@ -446,7 +446,7 @@ export default function OrdersPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={8} className='px-4 py-16 text-center text-sm text-[#7a7697] dark:text-slate-400'>
                       No orders found.
                     </td>
                   </tr>
@@ -455,7 +455,7 @@ export default function OrdersPage() {
             </table>
           </div>
 
-          <div className='border-t border-[#eceaf8] p-4'>
+          <div className='border-t border-[#eceaf8] p-4 dark:border-slate-700'>
             <Pagination
               totalItems={totalItems}
               currentPage={safePage}
@@ -473,48 +473,62 @@ export default function OrdersPage() {
 
       {detailOrder ? (
         <div className='fixed inset-0 z-40 flex items-center justify-center bg-[#191532]/45 px-4 py-6'>
-          <article className='flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[30px] border border-[#eceaf8] bg-white shadow-[0_25px_65px_rgba(23,20,55,0.35)]'>
-            <div className='border-b border-[#eceaf8] px-6 py-4'>
-              <h3 className='text-xl font-bold text-[#212047]'>Order Detail</h3>
-              <p className='mt-1 text-sm text-[#7a7697]'>{extractOrderId(detailOrder)}</p>
+          <article className='flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[30px] border border-[#eceaf8] bg-white shadow-[0_25px_65px_rgba(23,20,55,0.35)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_25px_65px_rgba(0,0,0,0.35)]'>
+            <div className='border-b border-[#eceaf8] px-6 py-4 dark:border-slate-700'>
+              <h3 className='text-xl font-bold text-[#212047] dark:text-slate-100'>Order Detail</h3>
+              <p className='mt-1 text-sm text-[#7a7697] dark:text-slate-400'>{extractOrderId(detailOrder)}</p>
             </div>
 
             <div className='space-y-4 overflow-y-auto px-6 py-5'>
               <div className='grid gap-3 md:grid-cols-2 xl:grid-cols-6'>
-                <article className='rounded-2xl border border-[#eceaf8] p-4'>
-                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Order Status</p>
+                <article className='rounded-2xl border border-[#eceaf8] p-4 dark:border-slate-700'>
+                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9] dark:text-slate-400'>Order Status</p>
                   <div className='mt-2'>
                     <OrderStatusBadge variant='order' status={detailOrder.status} />
                   </div>
                 </article>
-                <article className='rounded-2xl border border-[#eceaf8] p-4'>
-                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Payment Status</p>
+                <article className='rounded-2xl border border-[#eceaf8] p-4 dark:border-slate-700'>
+                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9] dark:text-slate-400'>
+                    Payment Status
+                  </p>
                   <div className='mt-2'>
                     <OrderStatusBadge variant='payment' status={detailOrder.payment_status} />
                   </div>
                 </article>
-                <article className='rounded-2xl border border-[#eceaf8] p-4'>
-                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Final Price</p>
-                  <p className='mt-2 text-lg font-bold text-[#2f8a57]'>{formatCurrency(detailOrder.final_price)}</p>
+                <article className='rounded-2xl border border-[#eceaf8] p-4 dark:border-slate-700'>
+                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9] dark:text-slate-400'>Final Price</p>
+                  <p className='mt-2 text-lg font-bold text-[#2f8a57] dark:text-emerald-300'>
+                    {formatCurrency(detailOrder.final_price)}
+                  </p>
                 </article>
-                <article className='rounded-2xl border border-[#eceaf8] p-4'>
-                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Buyer</p>
-                  <p className='mt-2 text-sm font-semibold text-[#2d2950]'>{getBuyerInfo(detailOrder).name}</p>
-                  <p className='mt-1 text-xs text-[#7a7697]'>{getBuyerInfo(detailOrder).email}</p>
-                  <p className='mt-1 text-xs text-[#7a7697]'>{getBuyerInfo(detailOrder).phone}</p>
+                <article className='rounded-2xl border border-[#eceaf8] p-4 dark:border-slate-700'>
+                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9] dark:text-slate-400'>Buyer</p>
+                  <p className='mt-2 text-sm font-semibold text-[#2d2950] dark:text-slate-100'>
+                    {getBuyerInfo(detailOrder).name}
+                  </p>
+                  <p className='mt-1 text-xs text-[#7a7697] dark:text-slate-400'>{getBuyerInfo(detailOrder).email}</p>
+                  <p className='mt-1 text-xs text-[#7a7697] dark:text-slate-400'>{getBuyerInfo(detailOrder).phone}</p>
                 </article>
-                <article className='rounded-2xl border border-[#eceaf8] p-4'>
-                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Delivery Address</p>
-                  <p className='mt-2 text-sm font-semibold text-[#2d2950]'>{getAddressInfo(detailOrder).receiver}</p>
-                  <p className='mt-1 text-xs text-[#7a7697]'>{getAddressInfo(detailOrder).phone}</p>
-                  <p className='mt-1 text-xs text-[#7a7697]'>{getAddressInfo(detailOrder).location}</p>
+                <article className='rounded-2xl border border-[#eceaf8] p-4 dark:border-slate-700'>
+                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9] dark:text-slate-400'>
+                    Delivery Address
+                  </p>
+                  <p className='mt-2 text-sm font-semibold text-[#2d2950] dark:text-slate-100'>
+                    {getAddressInfo(detailOrder).receiver}
+                  </p>
+                  <p className='mt-1 text-xs text-[#7a7697] dark:text-slate-400'>{getAddressInfo(detailOrder).phone}</p>
+                  <p className='mt-1 text-xs text-[#7a7697] dark:text-slate-400'>
+                    {getAddressInfo(detailOrder).location}
+                  </p>
                 </article>
-                <article className='rounded-2xl border border-[#eceaf8] p-4'>
-                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9]'>Shipper</p>
-                  <p className='mt-2 text-sm font-semibold text-[#2d2950]'>{getShipperInfo(detailOrder).name}</p>
-                  <p className='mt-1 text-xs text-[#7a7697]'>{getShipperInfo(detailOrder).email}</p>
-                  <p className='mt-1 text-xs text-[#7a7697]'>{getShipperInfo(detailOrder).phone}</p>
-                  <p className='mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b86ab]'>
+                <article className='rounded-2xl border border-[#eceaf8] p-4 dark:border-slate-700'>
+                  <p className='text-xs uppercase tracking-[0.15em] text-[#9b97b9] dark:text-slate-400'>Shipper</p>
+                  <p className='mt-2 text-sm font-semibold text-[#2d2950] dark:text-slate-100'>
+                    {getShipperInfo(detailOrder).name}
+                  </p>
+                  <p className='mt-1 text-xs text-[#7a7697] dark:text-slate-400'>{getShipperInfo(detailOrder).email}</p>
+                  <p className='mt-1 text-xs text-[#7a7697] dark:text-slate-400'>{getShipperInfo(detailOrder).phone}</p>
+                  <p className='mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b86ab] dark:text-slate-400'>
                     Shipment: {getShipperInfo(detailOrder).status}
                   </p>
                 </article>

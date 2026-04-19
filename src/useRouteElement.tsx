@@ -37,6 +37,25 @@ import NotificationsPage from './pages/AdminNotifications'
 import DashboardStatsPage from './pages/AdminDashboardStats'
 import RevenuePage from './pages/AdminRevenue'
 import OrdersReportPage from './pages/AdminOrdersReport'
+import { useEffect } from 'react'
+import { useTheme } from './contexts/theme.context'
+
+function LoginThemeGuard({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
+
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.remove('dark')
+    root.style.colorScheme = 'light'
+
+    return () => {
+      root.classList.toggle('dark', theme === 'dark')
+      root.style.colorScheme = theme
+    }
+  }, [theme])
+
+  return children
+}
 
 //Tạo Protect để bảo vệ web khi user biêt domain mà chưa đăng nhập thì những cái như profile, apply k cho phép truy cập
 function ProtectedRoute() {
@@ -328,7 +347,11 @@ export default function useRouteElement() {
         {
           path: path.login,
           index: true,
-          element: <Login />
+          element: (
+            <LoginThemeGuard>
+              <Login />
+            </LoginThemeGuard>
+          )
         }
       ]
     },

@@ -83,9 +83,9 @@ export default function Pagination({
 
   return (
     <div
-      className={`flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#f4f6fa] px-4 py-3 ${className}`.trim()}
+      className={`flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#f4f6fa] px-4 py-3 dark:bg-slate-900/75 ${className}`.trim()}
     >
-      <p className='text-sm font-medium text-[#6e7382]'>
+      <p className='text-sm font-medium text-[#6e7382] dark:text-slate-300'>
         {startItem}-{endItem} of {totalItems} {itemLabel}
       </p>
 
@@ -95,7 +95,7 @@ export default function Pagination({
           onClick={() => goToPage(1)}
           disabled={safeCurrentPage === 1}
           aria-label='Go to first page'
-          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition disabled:cursor-not-allowed disabled:opacity-50'
+          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition hover:bg-[#eef7ff] disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-sky-300 dark:hover:bg-slate-800'
         >
           <ChevronsLeft className='h-4 w-4' />
         </button>
@@ -105,7 +105,7 @@ export default function Pagination({
           onClick={() => goToPage(safeCurrentPage - 1)}
           disabled={safeCurrentPage === 1}
           aria-label='Go to previous page'
-          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition disabled:cursor-not-allowed disabled:opacity-50'
+          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition hover:bg-[#eef7ff] disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-sky-300 dark:hover:bg-slate-800'
         >
           <ChevronLeft className='h-4 w-4' />
         </button>
@@ -120,8 +120,8 @@ export default function Pagination({
               aria-current={isActive ? 'page' : undefined}
               className={`inline-flex h-8 min-w-8 items-center justify-center rounded-md border text-sm font-medium transition ${
                 isActive
-                  ? 'border-[#7ec2f7] bg-white text-[#3ba4f6]'
-                  : 'border-transparent bg-transparent text-[#4f5564] hover:bg-white hover:text-[#3ba4f6]'
+                  ? 'border-[#7ec2f7] bg-white text-[#3ba4f6] dark:border-sky-400 dark:bg-slate-900 dark:text-sky-300'
+                  : 'border-transparent bg-transparent text-[#4f5564] hover:bg-white hover:text-[#3ba4f6] dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100'
               }`}
             >
               {page}
@@ -134,7 +134,7 @@ export default function Pagination({
           onClick={() => goToPage(safeCurrentPage + 1)}
           disabled={safeCurrentPage === totalPages}
           aria-label='Go to next page'
-          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition disabled:cursor-not-allowed disabled:opacity-50'
+          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition hover:bg-[#eef7ff] disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-sky-300 dark:hover:bg-slate-800'
         >
           <ChevronRight className='h-4 w-4' />
         </button>
@@ -144,17 +144,17 @@ export default function Pagination({
           onClick={() => goToPage(totalPages)}
           disabled={safeCurrentPage === totalPages}
           aria-label='Go to last page'
-          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition disabled:cursor-not-allowed disabled:opacity-50'
+          className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#7ec2f7] bg-white text-[#3ba4f6] transition hover:bg-[#eef7ff] disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-sky-300 dark:hover:bg-slate-800'
         >
           <ChevronsRight className='h-4 w-4' />
         </button>
       </div>
 
-      <div className='flex items-center gap-2 text-sm text-[#6e7382]'>
+      <div className='flex items-center gap-2 text-sm text-[#6e7382] dark:text-slate-300'>
         <select
           value={normalizedPageSize}
           onChange={(event) => handlePageSizeChange(Number(event.target.value))}
-          className='h-8 rounded-md border border-[#7ec2f7] bg-white px-2 text-[#3ba4f6] outline-none'
+          className='h-8 rounded-md border border-[#7ec2f7] bg-white px-2 text-[#3ba4f6] outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-sky-300'
           aria-label='Select page size'
         >
           {pageSizeOptions.map((size) => (

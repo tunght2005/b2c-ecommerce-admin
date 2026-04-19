@@ -241,14 +241,16 @@ export default function TrackingLogsPage() {
                   onClick={() => setSelectedShipmentId(shipment._id)}
                   className={`w-full rounded-2xl border p-4 text-left transition ${
                     selectedShipment?._id === shipment._id
-                      ? 'border-[#bcb3ea] bg-[#f7f5ff]'
-                      : 'border-[#eceaf8] bg-white hover:bg-[#fbfaff]'
+                      ? 'border-[#bcb3ea] bg-[#f7f5ff] dark:border-indigo-500/40 dark:bg-slate-800/90'
+                      : 'border-[#eceaf8] bg-white hover:bg-[#fbfaff] dark:border-slate-700 dark:bg-slate-950/70 dark:hover:bg-slate-900/80'
                   }`}
                 >
                   <div className='flex items-start justify-between gap-3'>
                     <div>
-                      <p className='text-sm font-bold text-[#28244f]'>#{shipment._id.slice(-8).toUpperCase()}</p>
-                      <p className='mt-1 text-xs text-[#8f8aac]'>
+                      <p className='text-sm font-bold text-[#28244f] dark:text-slate-100'>
+                        #{shipment._id.slice(-8).toUpperCase()}
+                      </p>
+                      <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>
                         Order:{' '}
                         {typeof shipment.order_id === 'object' && shipment.order_id
                           ? shipment.order_id._id.slice(-8).toUpperCase()
@@ -256,11 +258,11 @@ export default function TrackingLogsPage() {
                               .slice(-8)
                               .toUpperCase()}
                       </p>
-                      <p className='mt-1 text-xs text-[#8f8aac]'>Buyer: {getBuyer(shipment)}</p>
+                      <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>Buyer: {getBuyer(shipment)}</p>
                     </div>
                     <ShipmentStatusBadge status={shipment.status} />
                   </div>
-                  <div className='mt-3 flex items-center justify-between text-xs text-[#7a7697]'>
+                  <div className='mt-3 flex items-center justify-between text-xs text-[#7a7697] dark:text-slate-400'>
                     <span>Shipper: {getShipper(shipment)}</span>
                     <span>
                       <Clock3 className='inline h-3.5 w-3.5' /> {formatDateTime(shipment.updatedAt)}

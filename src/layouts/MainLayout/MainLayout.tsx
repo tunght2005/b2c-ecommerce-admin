@@ -19,9 +19,9 @@ export default function MainLayout({ children }: Props) {
   //   return <Navigate to={path.login} replace />
   // }
   return (
-    <div className='grid min-h-screen grid-cols-[260px_1fr]'>
+    <div className='grid min-h-screen grid-cols-[260px_1fr] bg-[var(--app-bg)] text-[var(--app-text)]'>
       <SideBar />
-      <main className='col-span-1 min-w-0 h-full bg-[#f9ffff] px-5 py-4'>
+      <main className='col-span-1 min-w-0 h-full bg-[var(--app-bg)] px-5 py-4'>
         <Headers />
         {children}
       </main>

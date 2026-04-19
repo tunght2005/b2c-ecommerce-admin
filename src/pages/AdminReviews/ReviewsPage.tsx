@@ -156,10 +156,10 @@ export default function ReviewsPage() {
 
   return (
     <section className='space-y-5 pb-4'>
-      <div className='rounded-[30px] border border-[#eceaf8] bg-white p-6 shadow-[0_18px_50px_rgba(27,23,64,0.08)]'>
-        <p className='text-sm font-semibold uppercase tracking-[0.24em] text-[#8a84ad]'>Reviews</p>
-        <h1 className='mt-2 text-3xl font-black tracking-tight text-[#201f47]'>Customer Reviews</h1>
-        <p className='mt-2 text-sm text-[#6d6a8a]'>
+      <div className='rounded-[30px] border border-[#eceaf8] bg-white p-6 shadow-[0_18px_50px_rgba(27,23,64,0.08)] dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-[0_18px_50px_rgba(0,0,0,0.22)]'>
+        <p className='text-sm font-semibold uppercase tracking-[0.24em] text-[#8a84ad] dark:text-slate-400'>Reviews</p>
+        <h1 className='mt-2 text-3xl font-black tracking-tight text-[#201f47] dark:text-slate-100'>Customer Reviews</h1>
+        <p className='mt-2 text-sm text-[#6d6a8a] dark:text-slate-400'>
           Theo dõi chất lượng đánh giá và phản hồi của khách hàng theo từng sản phẩm.
         </p>
       </div>
@@ -167,10 +167,10 @@ export default function ReviewsPage() {
       <OrderStatsCards items={reviewStats} />
 
       <div className='grid gap-4 xl:grid-cols-[1.1fr_1.4fr]'>
-        <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)]'>
+        <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)] dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-[0_12px_36px_rgba(0,0,0,0.18)]'>
           <div className='mb-4 flex items-center justify-between'>
-            <h2 className='text-xl font-bold text-[#212047]'>Top sản phẩm theo review</h2>
-            <Star className='h-5 w-5 text-[#f08c44]' />
+            <h2 className='text-xl font-bold text-[#212047] dark:text-slate-100'>Top sản phẩm theo review</h2>
+            <Star className='h-5 w-5 text-[#f08c44] dark:text-amber-300' />
           </div>
 
           <div className='space-y-3'>
@@ -183,12 +183,12 @@ export default function ReviewsPage() {
                   onClick={() => productId && setSelectedProductId(productId)}
                   className={`w-full rounded-2xl border px-4 py-3 text-left transition ${
                     activeProductId === productId
-                      ? 'border-[#d9d3ef] bg-[#f8f6ff]'
-                      : 'border-[#eceaf8] bg-white hover:bg-[#fbfaff]'
+                      ? 'border-[#d9d3ef] bg-[#f8f6ff] dark:border-indigo-500/40 dark:bg-slate-800/95'
+                      : 'border-[#eceaf8] bg-white hover:bg-[#fbfaff] dark:border-slate-700 dark:bg-slate-950/70 dark:hover:bg-slate-900/85'
                   }`}
                 >
-                  <p className='text-sm font-bold text-[#2a254b]'>{item?.product?.name || 'N/A'}</p>
-                  <p className='mt-1 text-xs text-[#8f8aac]'>
+                  <p className='text-sm font-bold text-[#2a254b] dark:text-slate-100'>{item?.product?.name || 'N/A'}</p>
+                  <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>
                     {item?.summary?.totalReviews || 0} review(s) -{' '}
                     {Number(item?.summary?.averageRating || 0).toFixed(2)} sao
                   </p>
@@ -198,41 +198,43 @@ export default function ReviewsPage() {
           </div>
         </article>
 
-        <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)]'>
+        <article className='rounded-3xl border border-[#eceaf8] bg-white p-5 shadow-[0_12px_36px_rgba(28,24,70,0.06)] dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-[0_12px_36px_rgba(0,0,0,0.18)]'>
           <div className='mb-4 flex items-center justify-between'>
-            <h2 className='text-xl font-bold text-[#212047]'>Review chi tiết sản phẩm ({filteredReviews.length})</h2>
+            <h2 className='text-xl font-bold text-[#212047] dark:text-slate-100'>
+              Review chi tiết sản phẩm ({filteredReviews.length})
+            </h2>
             <div className='flex items-center gap-2'>
               <button
                 type='button'
                 onClick={() => setIsFilterOpen((prev) => !prev)}
-                className='inline-flex h-8 items-center gap-2 rounded-full border border-[#d9d3ef] bg-white px-3 text-xs font-semibold text-[#5f5a7a] transition hover:border-[#bfb5ea] hover:text-[#6f62cf]'
+                className='inline-flex h-8 items-center gap-2 rounded-full border border-[#d9d3ef] bg-white px-3 text-xs font-semibold text-[#5f5a7a] transition hover:border-[#bfb5ea] hover:text-[#6f62cf] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100'
               >
                 <SlidersHorizontal className='h-3.5 w-3.5' />
                 Filter nâng cao
               </button>
-              <MessageSquareText className='h-5 w-5 text-[#6f62cf]' />
+              <MessageSquareText className='h-5 w-5 text-[#6f62cf] dark:text-indigo-300' />
             </div>
           </div>
 
           {isFilterOpen ? (
-            <div className='mb-4 rounded-2xl border border-[#eceaf8] bg-[#faf9ff] p-4'>
+            <div className='mb-4 rounded-2xl border border-[#eceaf8] bg-[#faf9ff] p-4 dark:border-slate-700 dark:bg-slate-950/70'>
               <div className='grid gap-3 md:grid-cols-3'>
                 <input
                   value={keyword}
                   onChange={(event) => setKeyword(event.target.value)}
                   placeholder='Tìm theo nội dung review'
-                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none'
+                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500'
                 />
                 <input
                   value={userKeyword}
                   onChange={(event) => setUserKeyword(event.target.value)}
                   placeholder='Tìm theo username/email'
-                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none'
+                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500'
                 />
                 <select
                   value={ratingFilter}
                   onChange={(event) => setRatingFilter(event.target.value as 'all' | '1' | '2' | '3' | '4' | '5')}
-                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none'
+                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
                 >
                   <option value='all'>Rating: Tất cả</option>
                   <option value='5'>5 sao</option>
@@ -245,22 +247,22 @@ export default function ReviewsPage() {
                   type='date'
                   value={fromDate}
                   onChange={(event) => setFromDate(event.target.value)}
-                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none'
+                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
                 />
                 <input
                   type='date'
                   value={toDate}
                   onChange={(event) => setToDate(event.target.value)}
-                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none'
+                  className='h-10 rounded-xl border border-[#e5e1f3] bg-white px-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
                 />
               </div>
 
               <div className='mt-3 flex items-center justify-between'>
-                <p className='text-xs text-[#7a7697]'>Hiển thị {filteredReviews.length} review</p>
+                <p className='text-xs text-[#7a7697] dark:text-slate-400'>Hiển thị {filteredReviews.length} review</p>
                 <button
                   type='button'
                   onClick={resetFilters}
-                  className='inline-flex h-8 items-center rounded-full border border-[#e0dcf1] bg-white px-3 text-xs font-semibold text-[#6d688a] transition hover:border-[#bfb5ea] hover:text-[#6f62cf]'
+                  className='inline-flex h-8 items-center rounded-full border border-[#e0dcf1] bg-white px-3 text-xs font-semibold text-[#6d688a] transition hover:border-[#bfb5ea] hover:text-[#6f62cf] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100'
                 >
                   Reset filter
                 </button>
@@ -270,22 +272,24 @@ export default function ReviewsPage() {
 
           <div className='space-y-3'>
             {adminReviewsQuery.isLoading && !adminReviewsQuery.data ? (
-              <p className='rounded-2xl border border-[#eceaf8] px-4 py-6 text-sm text-[#7a7697]'>Đang tải review...</p>
+              <p className='rounded-2xl border border-[#eceaf8] px-4 py-6 text-sm text-[#7a7697] dark:border-slate-700 dark:text-slate-400'>
+                Đang tải review...
+              </p>
             ) : filteredReviews.length > 0 ? (
               filteredReviews.map((review) => (
-                <div key={review._id} className='rounded-2xl border border-[#eceaf8] px-4 py-3'>
+                <div key={review._id} className='rounded-2xl border border-[#eceaf8] px-4 py-3 dark:border-slate-700'>
                   <div className='flex items-center justify-between gap-3'>
-                    <p className='text-sm font-semibold text-[#2a254b]'>
+                    <p className='text-sm font-semibold text-[#2a254b] dark:text-slate-100'>
                       {typeof review.user_id === 'object'
                         ? review.user_id.username || review.user_id.email
                         : review.user_id}
                     </p>
-                    <span className='rounded-full border border-[#ffe5c7] bg-[#fff6eb] px-3 py-1 text-xs font-semibold text-[#c67818]'>
+                    <span className='rounded-full border border-[#ffe5c7] bg-[#fff6eb] px-3 py-1 text-xs font-semibold text-[#c67818] dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-amber-300'>
                       {review.rating}/5
                     </span>
                   </div>
-                  <p className='mt-2 text-sm text-[#5f5a7a]'>{review.content}</p>
-                  <p className='mt-2 text-xs text-[#8f8aac]'>{formatDateTime(review.createdAt)}</p>
+                  <p className='mt-2 text-sm text-[#5f5a7a] dark:text-slate-300'>{review.content}</p>
+                  <p className='mt-2 text-xs text-[#8f8aac] dark:text-slate-400'>{formatDateTime(review.createdAt)}</p>
                   <div className='mt-2'>
                     <CrudActionButtons
                       onView={() => setSelectedReview(review)}
@@ -295,7 +299,7 @@ export default function ReviewsPage() {
                 </div>
               ))
             ) : (
-              <p className='rounded-2xl border border-[#eceaf8] px-4 py-6 text-sm text-[#7a7697]'>
+              <p className='rounded-2xl border border-[#eceaf8] px-4 py-6 text-sm text-[#7a7697] dark:border-slate-700 dark:text-slate-400'>
                 Không có review phù hợp bộ lọc.
               </p>
             )}
@@ -305,33 +309,36 @@ export default function ReviewsPage() {
 
       {selectedReview ? (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-[#1f1b3f]/35 px-4'>
-          <div className='w-full max-w-xl rounded-3xl border border-[#eceaf8] bg-white p-6 shadow-[0_24px_64px_rgba(20,17,48,0.25)]'>
+          <div className='w-full max-w-xl rounded-3xl border border-[#eceaf8] bg-white p-6 shadow-[0_24px_64px_rgba(20,17,48,0.25)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_24px_64px_rgba(0,0,0,0.35)]'>
             <div className='mb-4 flex items-center justify-between'>
-              <h2 className='text-xl font-bold text-[#212047]'>Chi tiết review</h2>
+              <h2 className='text-xl font-bold text-[#212047] dark:text-slate-100'>Chi tiết review</h2>
               <button
                 type='button'
                 onClick={() => setSelectedReview(null)}
-                className='inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#eceaf8] text-[#6d688a] transition hover:border-[#d4cfea] hover:text-[#5f54bf]'
+                className='inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#eceaf8] text-[#6d688a] transition hover:border-[#d4cfea] hover:text-[#5f54bf] dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100'
               >
                 <X className='h-4 w-4' />
               </button>
             </div>
 
-            <div className='space-y-3 rounded-2xl border border-[#eceaf8] p-4'>
-              <p className='text-sm text-[#5f5a7a]'>
+            <div className='space-y-3 rounded-2xl border border-[#eceaf8] p-4 dark:border-slate-700'>
+              <p className='text-sm text-[#5f5a7a] dark:text-slate-300'>
                 Người dùng:{' '}
-                <span className='font-semibold text-[#2a254b]'>
+                <span className='font-semibold text-[#2a254b] dark:text-slate-100'>
                   {typeof selectedReview.user_id === 'object'
                     ? selectedReview.user_id.username || selectedReview.user_id.email
                     : selectedReview.user_id}
                 </span>
               </p>
-              <p className='text-sm text-[#5f5a7a]'>
-                Rating: <span className='font-semibold text-[#c67818]'>{selectedReview.rating}/5</span>
+              <p className='text-sm text-[#5f5a7a] dark:text-slate-300'>
+                Rating:{' '}
+                <span className='font-semibold text-[#c67818] dark:text-amber-300'>{selectedReview.rating}/5</span>
               </p>
-              <p className='text-sm text-[#5f5a7a]'>Nội dung:</p>
-              <p className='rounded-xl bg-[#faf9ff] p-3 text-sm text-[#2a254b]'>{selectedReview.content}</p>
-              <p className='text-xs text-[#8f8aac]'>{formatDateTime(selectedReview.createdAt)}</p>
+              <p className='text-sm text-[#5f5a7a] dark:text-slate-300'>Nội dung:</p>
+              <p className='rounded-xl bg-[#faf9ff] p-3 text-sm text-[#2a254b] dark:bg-slate-950/70 dark:text-slate-100'>
+                {selectedReview.content}
+              </p>
+              <p className='text-xs text-[#8f8aac] dark:text-slate-400'>{formatDateTime(selectedReview.createdAt)}</p>
             </div>
           </div>
         </div>
@@ -339,15 +346,15 @@ export default function ReviewsPage() {
 
       {deleteReviewId ? (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-[#1f1b3f]/35 px-4'>
-          <div className='w-full max-w-md rounded-3xl border border-[#eceaf8] bg-white p-6 shadow-[0_24px_64px_rgba(20,17,48,0.25)]'>
-            <h2 className='text-lg font-bold text-[#212047]'>Xác nhận xoá review</h2>
-            <p className='mt-2 text-sm text-[#6d688a]'>Bạn có chắc muốn xoá review này không?</p>
+          <div className='w-full max-w-md rounded-3xl border border-[#eceaf8] bg-white p-6 shadow-[0_24px_64px_rgba(20,17,48,0.25)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_24px_64px_rgba(0,0,0,0.35)]'>
+            <h2 className='text-lg font-bold text-[#212047] dark:text-slate-100'>Xác nhận xoá review</h2>
+            <p className='mt-2 text-sm text-[#6d688a] dark:text-slate-400'>Bạn có chắc muốn xoá review này không?</p>
 
             <div className='mt-5 flex justify-end gap-2'>
               <button
                 type='button'
                 onClick={() => setDeleteReviewId(null)}
-                className='inline-flex h-10 items-center rounded-full border border-[#e0dcf1] bg-white px-4 text-sm font-semibold text-[#6d688a] transition hover:border-[#bfb5ea] hover:text-[#6f62cf]'
+                className='inline-flex h-10 items-center rounded-full border border-[#e0dcf1] bg-white px-4 text-sm font-semibold text-[#6d688a] transition hover:border-[#bfb5ea] hover:text-[#6f62cf] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100'
               >
                 Huỷ
               </button>

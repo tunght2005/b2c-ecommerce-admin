@@ -538,10 +538,10 @@ export default function ShipmentsPage() {
                   <th className='px-4 py-4 text-right'>Actions</th>
                 </tr>
               </thead>
-              <tbody className='divide-y divide-[#f0edf8] bg-white'>
+              <tbody className='divide-y divide-[#f0edf8] bg-white dark:divide-slate-800 dark:bg-slate-900/70'>
                 {shipmentsQuery.isLoading && !shipmentsQuery.data ? (
                   <tr>
-                    <td colSpan={7} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={7} className='px-4 py-16 text-center text-sm text-[#7a7697] dark:text-slate-400'>
                       Loading shipments...
                     </td>
                   </tr>
@@ -549,36 +549,46 @@ export default function ShipmentsPage() {
                   paginatedShipments.map((shipment) => {
                     const order = typeof shipment.order_id === 'object' && shipment.order_id ? shipment.order_id : null
                     return (
-                      <tr key={shipment._id} className='transition hover:bg-[#fbfaff]'>
+                      <tr key={shipment._id} className='transition hover:bg-[#fbfaff] dark:hover:bg-slate-800/70'>
                         <td className='px-4 py-4'>
-                          <p className='font-semibold text-[#28244f]'>#{shipment._id.slice(-8).toUpperCase()}</p>
-                          <p className='mt-1 text-xs text-[#8f8aac]'>{shipment._id}</p>
+                          <p className='font-semibold text-[#28244f] dark:text-slate-100'>
+                            #{shipment._id.slice(-8).toUpperCase()}
+                          </p>
+                          <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>{shipment._id}</p>
                         </td>
                         <td className='px-4 py-4'>
-                          <p className='text-sm font-semibold text-[#2d2950]'>
+                          <p className='text-sm font-semibold text-[#2d2950] dark:text-slate-100'>
                             #{getOrderId(shipment).slice(-8).toUpperCase()}
                           </p>
-                          <p className='mt-1 text-xs text-[#8f8aac]'>
+                          <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>
                             {getBuyerName(shipment)} • {getBuyerContact(shipment)}
                           </p>
-                          <p className='mt-1 text-xs text-[#8f8aac]'>
+                          <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>
                             Address: {getDeliveryAddress(shipment).location}
                           </p>
                           {order ? (
-                            <p className='mt-1 text-xs text-[#8f8aac]'>{formatCurrency(order.final_price)}</p>
+                            <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>
+                              {formatCurrency(order.final_price)}
+                            </p>
                           ) : null}
                         </td>
                         <td className='px-4 py-4'>
-                          <p className='text-sm font-semibold text-[#2d2950]'>{getShipperName(shipment)}</p>
-                          <p className='mt-1 text-xs text-[#8f8aac]'>{getShipperContact(shipment)}</p>
+                          <p className='text-sm font-semibold text-[#2d2950] dark:text-slate-100'>
+                            {getShipperName(shipment)}
+                          </p>
+                          <p className='mt-1 text-xs text-[#8f8aac] dark:text-slate-400'>
+                            {getShipperContact(shipment)}
+                          </p>
                         </td>
                         <td className='px-4 py-4'>
                           <ShipmentStatusBadge status={shipment.status} />
                         </td>
-                        <td className='px-4 py-4 text-sm text-[#5f5a7a]'>
+                        <td className='px-4 py-4 text-sm text-[#5f5a7a] dark:text-slate-300'>
                           {shipment.expected_delivery_at ? formatDateTime(shipment.expected_delivery_at) : 'N/A'}
                         </td>
-                        <td className='px-4 py-4 text-sm text-[#5f5a7a]'>{formatDateTime(shipment.updatedAt)}</td>
+                        <td className='px-4 py-4 text-sm text-[#5f5a7a] dark:text-slate-300'>
+                          {formatDateTime(shipment.updatedAt)}
+                        </td>
                         <td className='px-4 py-4'>
                           <div className='flex flex-wrap items-center justify-end gap-2'>
                             {canUpdate ? (
@@ -607,7 +617,7 @@ export default function ShipmentsPage() {
             </table>
           </div>
 
-          <div className='border-t border-[#eceaf8] p-4'>
+          <div className='border-t border-[#eceaf8] p-4 dark:border-slate-700'>
             <Pagination
               totalItems={totalItems}
               currentPage={safePage}

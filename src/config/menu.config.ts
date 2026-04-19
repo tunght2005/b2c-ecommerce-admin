@@ -138,11 +138,11 @@ export const MENU_CONFIG: MenuItem[] = [
   {
     title: 'Return & Warranty',
     path: path.adminReturns,
-    roles: ROLE_GROUPS.ALL_STAFF,
+    roles: ROLE_GROUPS.ADMIN_SUPPORT,
     children: [
-      { title: 'Returns', path: path.adminReturns, roles: ROLE_GROUPS.ALL_STAFF },
-      { title: 'Return Policies', path: path.adminReturnPolicies, roles: ROLE_GROUPS.ALL_STAFF },
-      { title: 'Warranty', path: path.adminWarranty, roles: ROLE_GROUPS.ALL_STAFF }
+      { title: 'Returns', path: path.adminReturns, roles: ROLE_GROUPS.ADMIN_SUPPORT },
+      { title: 'Return Policies', path: path.adminReturnPolicies, roles: ROLE_GROUPS.ADMIN_SUPPORT },
+      { title: 'Warranty', path: path.adminWarranty, roles: ROLE_GROUPS.ADMIN_SUPPORT }
     ]
   },
 

@@ -1,6 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --app-bg: #f9ffff;
+  --app-surface: #ffffff;
+  --app-surface-2: #f5f4ff;
+  --app-border: #eceaf8;
+  --app-text: #2f2d57;
+  --app-text-strong: #1f1d43;
+  --app-text-muted: #6d6a8a;
+  --app-shadow: 0 18px 50px rgba(27, 23, 64, 0.08);
+}
+
+html.dark {
+  color-scheme: dark;
+  --app-bg: #0b1020;
+  --app-surface: #111827;
+  --app-surface-2: #0f172a;
+  --app-border: #24314b;
+  --app-text: #e6edf7;
+  --app-text-strong: #f8fbff;
+  --app-text-muted: #c3cde0;
+  --app-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
 @theme {
   --font-sans: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   --font-heading: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
@@ -16,11 +41,14 @@
 
   body {
     margin: 0;
-    background-color: #f9ffff;
-    color: #2f2d57;
+    background-color: var(--app-bg);
+    color: var(--app-text);
     font-size: 15px;
     line-height: 1.5;
     font-weight: 400;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   h1,
@@ -31,7 +59,8 @@
   h6 {
     font-family: var(--font-heading);
     letter-spacing: -0.01em;
-    color: #1f1d43;
+    color: var(--app-text-strong);
+    transition: color 0.2s ease;
   }
 
   h1 {
@@ -75,6 +104,78 @@
   textarea {
     font-size: 0.93rem;
     line-height: 1.45;
+    color: inherit;
+  }
+
+  .dark [class*='bg-white'] {
+    background-color: var(--app-surface) !important;
+  }
+
+  .dark [class*='bg-[#f9ffff]'],
+  .dark [class*='bg-[#fbfaff]'],
+  .dark [class*='bg-[#faf9ff]'],
+  .dark [class*='bg-[#f5f4ff]'],
+  .dark [class*='bg-[#eff8ff]'],
+  .dark [class*='bg-[#f4faff]'],
+  .dark [class*='bg-[#fff5f7]'] {
+    background-color: var(--app-surface-2) !important;
+  }
+
+  .dark [class*='hover:bg-white']:hover,
+  .dark [class*='hover:bg-[#fbfaff]']:hover,
+  .dark [class*='hover:bg-[#faf9ff]']:hover,
+  .dark [class*='hover:bg-[#f8f6ff]']:hover,
+  .dark [class*='hover:bg-[#f4faff]']:hover {
+    background-color: var(--app-surface-2) !important;
+  }
+
+  .dark [class*='border-[#eceaf8]'],
+  .dark [class*='border-[#ebe9fa]'],
+  .dark [class*='border-[#e5e1f3]'],
+  .dark [class*='border-[#d9d3ef]'],
+  .dark [class*='border-[#e0dcf1]'],
+  .dark [class*='border-[#d8edff]'] {
+    border-color: var(--app-border) !important;
+  }
+
+  .dark [class*='text-[#201f47]'],
+  .dark [class*='text-[#212047]'],
+  .dark [class*='text-[#1f1d43]'],
+  .dark [class*='text-[#2a254b]'],
+  .dark [class*='text-[#25224a]'],
+  .dark [class*='text-[#2d2950]'],
+  .dark [class*='text-[#4f5564]'],
+  .dark [class*='text-[#5f5a7a]'],
+  .dark [class*='text-[#6e7382]'],
+  .dark [class*='text-[#7a7697]'],
+  .dark [class*='text-[#7d7899]'],
+  .dark [class*='text-[#7f7a9e]'],
+  .dark [class*='text-[#8d88ab]'] {
+    color: var(--app-text-strong) !important;
+  }
+
+  .dark [class*='text-[#5f5b7f]'],
+  .dark [class*='text-[#6d6a8a]'],
+  .dark [class*='text-[#8d87c0]'],
+  .dark [class*='text-[#8c88ac]'],
+  .dark [class*='text-[#8f8aac]'],
+  .dark [class*='text-[#a55d2a]'],
+  .dark [class*='text-[#b17b60]'],
+  .dark [class*='text-[#9d98bf]'],
+  .dark [class*='text-[#9b97b9]'],
+  .dark [class*='text-[#6d688a]'],
+  .dark [class*='text-[#7b7798]'],
+  .dark [class*='text-[#7f7b9c]'] {
+    color: var(--app-text-muted) !important;
+  }
+
+  .dark [class*='shadow-[0_18px_50px_rgba(27,23,64,0.08)]'],
+  .dark [class*='shadow-[0_18px_40px_rgba(29,25,71,0.14)]'],
+  .dark [class*='shadow-[0_12px_36px_rgba(28,24,70,0.06)]'],
+  .dark [class*='shadow-[0_24px_64px_rgba(20,17,48,0.25)]'],
+  .dark [class*='shadow-[0_25px_65px_rgba(23,20,55,0.35)]'],
+  .dark [class*='shadow-[0_28px_80px_rgba(18,16,44,0.35)]'] {
+    box-shadow: var(--app-shadow) !important;
   }
 }
 

@@ -22,8 +22,8 @@ export default function SideBar() {
     return `group relative flex items-center px-4 py-3 rounded-xl transition-all duration-300 mb-1 mx-2
       ${
         isActive
-          ? 'bg-[#f2eeea] text-[#6d341d] shadow-[0_10px_30px_rgba(168,76,28,0.14)] ring-1 ring-white/30'
-          : 'text-[#8b5a46] hover:bg-white/20 hover:text-[#8a4a2d] border border-transparent'
+          ? 'bg-[#f2eeea] text-[#6d341d] shadow-[0_10px_30px_rgba(168,76,28,0.14)] ring-1 ring-white/30 dark:bg-slate-800 dark:text-indigo-200 dark:shadow-none dark:ring-slate-700/70'
+          : 'text-[#8b5a46] hover:bg-white/20 hover:text-[#8a4a2d] border border-transparent dark:text-slate-200 dark:hover:bg-slate-800/70 dark:hover:text-white'
       }`
   }
 
@@ -39,14 +39,14 @@ export default function SideBar() {
   }
 
   return (
-    <div className='sticky top-0 flex h-screen flex-col overflow-hidden rounded-r-[28px] bg-linear-to-br from-[#ffd79f] via-[#ff9d4a] to-[#e25a24] px-2 py-5 shadow-2xl'>
+    <div className='sticky top-0 flex h-screen flex-col overflow-hidden rounded-r-[28px] bg-linear-to-br from-[#ffd79f] via-[#ff9d4a] to-[#e25a24] px-2 py-5 shadow-2xl dark:from-slate-950 dark:via-slate-900 dark:to-slate-800'>
       <div className='flex justify-center p-2'>
         <img src={logo} alt='Logo' className='h-12 w-auto shrink-0' />
       </div>
 
-      <div className='mx-2 mb-4 h-px bg-white/18' />
+      <div className='mx-2 mb-4 h-px bg-white/18 dark:bg-slate-700/80' />
 
-      <aside className='flex-1 overflow-y-auto px-1 scroll-smooth [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.3)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 hover:[&::-webkit-scrollbar-thumb]:bg-white/35'>
+      <aside className='flex-1 overflow-y-auto px-1 scroll-smooth [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.3)_transparent] dark:[scrollbar-color:rgba(148,163,184,0.35)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 hover:[&::-webkit-scrollbar-thumb]:bg-white/35 dark:[&::-webkit-scrollbar-thumb]:bg-slate-600 dark:hover:[&::-webkit-scrollbar-thumb]:bg-slate-500'>
         <nav className='flex flex-col gap-1'>
           {filteredMenus.map((item) => {
             const Icon = ICON_MAP[item.title] ?? LayoutDashboard
@@ -74,21 +74,23 @@ export default function SideBar() {
                   onClick={() => toggleGroup(item.title)}
                   className={`flex w-full items-center rounded-[22px] px-4 py-3.5 text-sm font-semibold transition-all duration-300 ${
                     active
-                      ? 'bg-[#f2eeea] text-[#6d341d] shadow-[0_14px_30px_rgba(111,52,29,0.14)] ring-1 ring-white/45'
-                      : 'bg-white/10 text-[#fff7ef] hover:bg-white/18 hover:text-white'
+                      ? 'bg-[#f2eeea] text-[#6d341d] shadow-[0_14px_30px_rgba(111,52,29,0.14)] ring-1 ring-white/45 dark:bg-slate-800 dark:text-indigo-200 dark:shadow-none dark:ring-slate-700/70'
+                      : 'bg-white/10 text-[#fff7ef] hover:bg-white/18 hover:text-white dark:bg-slate-800/40 dark:text-slate-200 dark:hover:bg-slate-700/70'
                   }`}
                 >
-                  <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-[#8a4a2d]' : 'text-white'}`} />
+                  <Icon
+                    className={`h-4 w-4 shrink-0 ${active ? 'text-[#8a4a2d] dark:text-indigo-300' : 'text-white dark:text-slate-200'}`}
+                  />
                   <span className='ml-3'>{item.title}</span>
                   <ChevronDown
                     className={`ml-auto h-4 w-4 shrink-0 transition-transform ${
                       opened ? 'rotate-180' : ''
-                    } ${active ? 'text-[#8a4a2d]' : 'text-white'}`}
+                    } ${active ? 'text-[#8a4a2d] dark:text-indigo-300' : 'text-white dark:text-slate-200'}`}
                   />
                 </button>
 
                 {opened && (
-                  <div className='mt-1 ml-4 space-y-1 border-l border-white/18 pl-3'>
+                  <div className='mt-1 ml-4 space-y-1 border-l border-white/18 pl-3 dark:border-slate-700/80'>
                     {item.children?.map((child) => (
                       <NavLink
                         key={child.path}
@@ -96,8 +98,8 @@ export default function SideBar() {
                         className={({ isActive }) =>
                           `block rounded-lg px-3 py-2 text-xs font-medium transition ${
                             isActive
-                              ? 'bg-[#f2eeea] text-[#8a4a2d] shadow-sm'
-                              : 'text-[#ffe9da] hover:bg-white/10 hover:text-white'
+                              ? 'bg-[#f2eeea] text-[#8a4a2d] shadow-sm dark:bg-slate-800 dark:text-indigo-200'
+                              : 'text-[#ffe9da] hover:bg-white/10 hover:text-white dark:text-slate-300 dark:hover:bg-slate-700/70 dark:hover:text-white'
                           }`
                         }
                       >
@@ -112,12 +114,12 @@ export default function SideBar() {
         </nav>
       </aside>
 
-      <div className='mx-2 mt-4 overflow-hidden rounded-3xl border border-white/35 bg-linear-to-br from-[#ffe9d7]/95 via-[#fff1e4]/92 to-[#ffd7b8]/90 p-3 text-[#7a4a38] shadow-lg shadow-[#7b2f12]/10 ring-1 ring-white/25'>
+      <div className='mx-2 mt-4 overflow-hidden rounded-3xl border border-white/35 bg-linear-to-br from-[#ffe9d7]/95 via-[#fff1e4]/92 to-[#ffd7b8]/90 p-3 text-[#7a4a38] shadow-lg shadow-[#7b2f12]/10 ring-1 ring-white/25 dark:border-slate-700/80 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 dark:text-slate-200 dark:shadow-black/20 dark:ring-slate-700/60'>
         <div className='absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/35 blur-2xl' />
         <div className='absolute -bottom-6 -left-3 h-14 w-14 rounded-full bg-[#ffb47a]/25 blur-2xl' />
 
         <div className='relative flex items-center gap-3'>
-          <div className='relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#ffb86a] to-[#ff7a1f] text-white shadow-md shadow-[#ff7a1f]/25 ring-4 ring-white/50'>
+          <div className='relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#ffb86a] to-[#ff7a1f] text-white shadow-md shadow-[#ff7a1f]/25 ring-4 ring-white/50 dark:from-indigo-500 dark:to-cyan-500 dark:shadow-none dark:ring-slate-800/60'>
             <span className='absolute inset-0 rounded-2xl bg-white/15' />
             <Clock3 className='relative h-5 w-5' />
           </div>
@@ -125,17 +127,19 @@ export default function SideBar() {
           <div className='min-w-0 flex-1'>
             <div className='flex items-center gap-2'>
               <span className='h-2 w-2 rounded-full bg-[#ff8d2a] shadow-[0_0_0_4px_rgba(255,141,42,0.14)]' />
-              <p className='text-[10px] font-semibold uppercase tracking-[0.28em] text-[#b17b60]'>Now</p>
+              <p className='text-[10px] font-semibold uppercase tracking-[0.28em] text-[#b17b60] dark:text-slate-300'>
+                Now
+              </p>
             </div>
 
             <div className='mt-1 flex items-end gap-2'>
-              <span className='text-lg font-black leading-none text-[#6d341d]'>09:24</span>
-              <span className='mb-0.5 rounded-full bg-white/75 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#a55d2a] shadow-sm ring-1 ring-[#f0d0b6]'>
+              <span className='text-lg font-black leading-none text-[#6d341d] dark:text-slate-100'>09:24</span>
+              <span className='mb-0.5 rounded-full bg-white/75 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#a55d2a] shadow-sm ring-1 ring-[#f0d0b6] dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700'>
                 Live
               </span>
             </div>
 
-            <p className='mt-1 truncate text-[11px] leading-4 text-[#9a6a54]'>
+            <p className='mt-1 truncate text-[11px] leading-4 text-[#9a6a54] dark:text-slate-300'>
               Quick glance widget for the admin layout
             </p>
           </div>

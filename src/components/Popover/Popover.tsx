@@ -52,13 +52,13 @@ export default function Popover({
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss, role])
   const id = useId()
   return (
-    <Element className={className} ref={(node) => refs.setReference(node)} {...getReferenceProps()}>
+    <Element className={className} ref={(node: HTMLElement | null) => refs.setReference(node)} {...getReferenceProps()}>
       {typeof children === 'function' ? children({ open }) : children}
       <FloatingPortal id={id}>
         <AnimatePresence>
           {open && (
             <motion.div
-              ref={(node) => refs.setFloating(node)}
+              ref={(node: HTMLDivElement | null) => refs.setFloating(node)}
               style={{
                 transformOrigin: `${data.middlewareData.arrow?.x}px top`,
                 ...floatingStyles

@@ -35,7 +35,7 @@ export default function OrdersReportPage() {
                   <p className='mt-1 text-xs text-[#8f8aac]'>{formatDateTime(item.createdAt)}</p>
                 </div>
                 <p className='text-xs font-semibold text-[#2f8a57]'>{formatCurrency(item.final_price || 0)}</p>
-                <OrderStatusBadge status={item.status} />
+                <OrderStatusBadge variant='order' status={item.status} />
                 <span className='rounded-full border border-[#e7dcff] bg-[#f4efff] px-3 py-1 text-xs font-semibold text-[#6a4cc2]'>
                   {item.payment_status}
                 </span>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { ChevronDown, Clock3, LayoutDashboard } from 'lucide-react'
+import { CalendarDays, ChevronDown, Clock3, Globe, LayoutDashboard } from 'lucide-react'
 
 import { useAuth } from '../../contexts/app.context'
 import { ICON_MAP, filterMenuByRole, type MenuItem } from '../../config/menu.config'
@@ -17,10 +17,22 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
   const location = useLocation()
   const { role } = useAuth()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({})
+  const [now, setNow] = useState<Date>(() => new Date())
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false)
 
   useEffect(() => {
     onClose()
   }, [location.pathname, onClose])
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNow(new Date())
+    }, 1000)
+
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [])
 
   // Default to 'admin' role if not available
   const currentRole: SidebarRole = role && role !== 'customer' ? (role as SidebarRole) : 'admin'
@@ -45,6 +57,33 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
 
   const toggleGroup = (title: string) => {
     setOpenMenus((prev) => ({ ...prev, [title]: !prev[title] }))
+  }
+
+  const timeText = useMemo(
+    () =>
+      now.toLocaleTimeString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }),
+    [now]
+  )
+
+  const dateText = useMemo(
+    () =>
+      now.toLocaleDateString('vi-VN', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      }),
+    [now]
+  )
+
+  const timezoneText = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local', [])
+
+  const handleToggleWidget = () => {
+    setIsWidgetOpen((prev) => !prev)
   }
 
   return (
@@ -138,34 +177,64 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
             </nav>
           </aside>
 
-          <div className='mx-2 mt-4 overflow-hidden rounded-3xl border border-white/35 bg-linear-to-br from-[#ffe9d7]/95 via-[#fff1e4]/92 to-[#ffd7b8]/90 p-3 text-[#7a4a38] shadow-lg shadow-[#7b2f12]/10 ring-1 ring-white/25 dark:border-slate-700/80 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 dark:text-slate-200 dark:shadow-black/20 dark:ring-slate-700/60'>
+          <div className='relative mx-2 mt-4 overflow-hidden rounded-3xl border border-white/35 bg-linear-to-br from-[#ffe9d7]/95 via-[#fff1e4]/92 to-[#ffd7b8]/90 p-3 text-[#7a4a38] shadow-lg shadow-[#7b2f12]/10 ring-1 ring-white/25 dark:border-slate-700/80 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 dark:text-slate-200 dark:shadow-black/20 dark:ring-slate-700/60'>
             <div className='absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/35 blur-2xl' />
             <div className='absolute -bottom-6 -left-3 h-14 w-14 rounded-full bg-[#ffb47a]/25 blur-2xl' />
 
-            <div className='relative flex items-center gap-3'>
-              <div className='relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#ffb86a] to-[#ff7a1f] text-white shadow-md shadow-[#ff7a1f]/25 ring-4 ring-white/50 dark:from-indigo-500 dark:to-cyan-500 dark:shadow-none dark:ring-slate-800/60'>
-                <span className='absolute inset-0 rounded-2xl bg-white/15' />
-                <Clock3 className='relative h-5 w-5' />
-              </div>
+            <button
+              type='button'
+              onClick={handleToggleWidget}
+              className='relative w-full rounded-2xl p-1.5 text-left transition hover:bg-white/25 dark:hover:bg-slate-800/40'
+            >
+              <div className='flex items-center gap-3'>
+                <div className='relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#ffb86a] to-[#ff7a1f] text-white shadow-md shadow-[#ff7a1f]/25 ring-4 ring-white/50 dark:from-indigo-500 dark:to-cyan-500 dark:shadow-none dark:ring-slate-800/60'>
+                  <span className='absolute inset-0 rounded-2xl bg-white/15' />
+                  <Clock3 className='relative h-5 w-5' />
+                </div>
 
-              <div className='min-w-0 flex-1'>
-                <div className='flex items-center gap-2'>
-                  <span className='h-2 w-2 rounded-full bg-[#ff8d2a] shadow-[0_0_0_4px_rgba(255,141,42,0.14)]' />
-                  <p className='text-[10px] font-semibold uppercase tracking-[0.28em] text-[#b17b60] dark:text-slate-300'>
-                    Now
+                <div className='min-w-0 flex-1'>
+                  <div className='flex items-center gap-2'>
+                    <span className='h-2 w-2 rounded-full bg-[#ff8d2a] shadow-[0_0_0_4px_rgba(255,141,42,0.14)]' />
+                    <p className='text-[10px] font-semibold uppercase tracking-[0.28em] text-[#b17b60] dark:text-slate-300'>
+                      Now
+                    </p>
+                  </div>
+
+                  <div className='mt-1 flex flex-wrap items-end gap-2'>
+                    <span className='text-lg font-black leading-none tabular-nums text-[#6d341d] dark:text-slate-100'>
+                      {timeText}
+                    </span>
+                    <span className='mb-0.5 rounded-full bg-white/75 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#a55d2a] shadow-sm ring-1 ring-[#f0d0b6] dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700'>
+                      Live
+                    </span>
+                  </div>
+
+                  <p className='mt-1 truncate text-[11px] leading-4 text-[#9a6a54] dark:text-slate-300'>
+                    Realtime panel: date and timezone
                   </p>
                 </div>
+              </div>
+            </button>
 
-                <div className='mt-1 flex items-end gap-2'>
-                  <span className='text-lg font-black leading-none text-[#6d341d] dark:text-slate-100'>09:24</span>
-                  <span className='mb-0.5 rounded-full bg-white/75 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#a55d2a] shadow-sm ring-1 ring-[#f0d0b6] dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700'>
-                    Live
-                  </span>
+            <div
+              className={`relative overflow-hidden transition-all duration-300 ${isWidgetOpen ? 'mt-3 max-h-72 opacity-100' : 'max-h-0 opacity-0'}`}
+            >
+              <div className='rounded-2xl border border-white/35 bg-white/55 p-3 text-xs leading-5 text-[#7a4a38] dark:border-slate-700 dark:bg-slate-900/75 dark:text-slate-200'>
+                <div className='space-y-2'>
+                  <div className='rounded-xl border border-white/45 bg-white/65 px-2.5 py-2 dark:border-slate-700 dark:bg-slate-900/70'>
+                    <p className='flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8f562f] dark:text-slate-300'>
+                      <CalendarDays className='h-3.5 w-3.5' /> Date
+                    </p>
+                    <p className='mt-0.5 break-words text-[11px]'>{dateText}</p>
+                  </div>
+
+                  <div className='rounded-xl border border-white/45 bg-white/65 px-2.5 py-2 dark:border-slate-700 dark:bg-slate-900/70'>
+                    <p className='flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8f562f] dark:text-slate-300'>
+                      <Globe className='h-3.5 w-3.5' /> Timezone
+                    </p>
+                    <p className='mt-0.5 break-all text-[11px]'>{timezoneText}</p>
+                  </div>
                 </div>
-
-                <p className='mt-1 truncate text-[11px] leading-4 text-[#9a6a54] dark:text-slate-300'>
-                  Quick glance widget for the admin layout
-                </p>
               </div>
             </div>
           </div>

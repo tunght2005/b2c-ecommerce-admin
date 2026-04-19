@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, Moon, Search, SunMedium } from 'lucide-react'
+import { Bell, ChevronDown, Menu, Moon, Search, SunMedium } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -8,7 +8,11 @@ import path from '../../constants/path'
 import { useAuth } from '../../contexts/app.context'
 import { useTheme } from '../../contexts/theme.context'
 
-export default function Header() {
+interface HeaderProps {
+  onToggleSidebar: () => void
+}
+
+export default function Header({ onToggleSidebar }: HeaderProps) {
   const navigate = useNavigate()
   const { logout, email, profile, role } = useAuth()
   const { isDarkMode, toggleTheme } = useTheme()
@@ -37,8 +41,17 @@ export default function Header() {
     .join('')
 
   return (
-    <header className='mb-5 flex flex-wrap items-center gap-3 border-b border-[#eceaf8] pb-4 dark:border-slate-700/80'>
-      <div className='relative min-w-0 flex-1 max-w-110'>
+    <header className='mb-4 flex flex-wrap items-center gap-2 border-b border-[#eceaf8] pb-4 dark:border-slate-700/80 sm:mb-5 sm:gap-3'>
+      <button
+        type='button'
+        onClick={onToggleSidebar}
+        className='order-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ebe9fa] bg-white text-[#6f62cf] transition hover:bg-[#f5f4ff] dark:border-slate-700 dark:bg-slate-900 dark:text-indigo-300 dark:hover:bg-slate-800 lg:hidden'
+        aria-label='Open menu'
+      >
+        <Menu className='h-4 w-4' />
+      </button>
+
+      <div className='order-3 relative min-w-0 w-full basis-full md:order-2 md:max-w-110 md:flex-1 md:basis-0'>
         <Search className='pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#8d87c0] dark:text-slate-300' />
         <input
           type='text'
@@ -47,7 +60,7 @@ export default function Header() {
         />
       </div>
 
-      <div className='ml-auto flex items-center gap-3'>
+      <div className='order-2 ml-auto flex shrink-0 items-center gap-2 sm:gap-3 md:order-3'>
         <button
           type='button'
           className='flex h-10 w-10 items-center justify-center rounded-full bg-[#f5f4ff] text-[#6f62cf] transition hover:bg-[#ece9ff] dark:bg-slate-900 dark:text-indigo-300 dark:hover:bg-slate-800'
@@ -91,7 +104,7 @@ export default function Header() {
           {({ open }: { open: boolean }) => (
             <button
               type='button'
-              className='flex items-center gap-2 rounded-full border border-[#ebe9fa] bg-white px-3 py-1.5 text-left transition hover:border-[#d9d5f4] dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600'
+              className='flex max-w-[min(56vw,260px)] items-center gap-2 rounded-full border border-[#ebe9fa] bg-white px-3 py-1.5 text-left transition hover:border-[#d9d5f4] dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600 md:max-w-[300px]'
             >
               {avatarUrl ? (
                 <img src={avatarUrl} alt='Avatar' className='h-8 w-8 rounded-full object-cover' />
@@ -100,7 +113,7 @@ export default function Header() {
                   {initials || 'US'}
                 </div>
               )}
-              <span className='hidden text-sm font-medium text-[#5f5b7f] sm:inline dark:text-slate-100'>
+              <span className='hidden min-w-0 truncate text-sm font-medium text-[#5f5b7f] md:inline dark:text-slate-100'>
                 {displayName}
                 {role ? ` (${role})` : ''}
               </span>

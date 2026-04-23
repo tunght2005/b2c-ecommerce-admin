@@ -4,14 +4,30 @@ interface ReviewUserRef {
   _id: string
   username?: string
   email?: string
+  role?: string
+}
+
+interface ReviewProductRef {
+  _id: string
+  name?: string
+  slug?: string
+}
+
+interface ReviewReply {
+  content?: string
+  user_id?: string | ReviewUserRef
+  role?: 'admin' | 'support'
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface ReviewEntity {
   _id: string
   user_id: string | ReviewUserRef
-  product_id: string
+  product_id: string | ReviewProductRef
   rating: number
   content: string
+  admin_reply?: ReviewReply
   createdAt: string
   updatedAt: string
 }
@@ -60,6 +76,13 @@ const reviewApi = {
 
   removeByAdmin(id: string) {
     return http.delete<{ success: boolean; message: string }>(`${REVIEW_BASE_URL}/admin/${id}`)
+  },
+
+  replyByAdmin(id: string, payload: { content: string }) {
+    return http.put<{ success: boolean; message: string; data: ReviewEntity }>(
+      `${REVIEW_BASE_URL}/admin/${id}/reply`,
+      payload
+    )
   }
 }
 

@@ -13,6 +13,34 @@ function getReplyAuthorName(user: FeedbackEntity['user_id']) {
   return typeof user === 'object' && user ? user.username || user.email || 'N/A' : 'N/A'
 }
 
+function getRelatedProduct(ticket: FeedbackEntity) {
+  if (!ticket.product_id) return null
+  if (typeof ticket.product_id === 'object') {
+    return {
+      id: ticket.product_id._id,
+      name: ticket.product_id.name || 'Sản phẩm không xác định'
+    }
+  }
+  return {
+    id: ticket.product_id,
+    name: 'Sản phẩm chưa populate'
+  }
+}
+
+function getRelatedOrder(ticket: FeedbackEntity) {
+  if (!ticket.order_id) return null
+  if (typeof ticket.order_id === 'object') {
+    return {
+      id: ticket.order_id._id,
+      status: ticket.order_id.status || 'N/A'
+    }
+  }
+  return {
+    id: ticket.order_id,
+    status: 'N/A'
+  }
+}
+
 export default function FeedbackRepliesPage() {
   const { role } = useAuth()
   const canAccess = role === 'admin' || role === 'support'
@@ -107,17 +135,42 @@ export default function FeedbackRepliesPage() {
             <option value=''>Choose a ticket</option>
             {(ticketsQuery.data ?? []).map((ticket) => (
               <option key={ticket._id} value={ticket._id}>
-                {ticket.title} ({ticket.status})
+                {ticket.title} ({ticket.status}){ticket.product_id ? ' | Product' : ''}
+                {ticket.order_id ? ' | Order' : ''}
               </option>
             ))}
           </select>
 
           {selectedTicket ? (
             <div className='mt-4 rounded-2xl border border-[#eceaf8] p-4'>
-              <p className='text-sm font-bold text-[#28244f]'>{selectedTicket.title}</p>
-              <p className='mt-2 text-xs text-[#7a7697]'>#{selectedTicket._id.slice(-8).toUpperCase()}</p>
-              <p className='mt-2 text-xs text-[#7a7697]'>Status: {selectedTicket.status}</p>
-              <p className='mt-1 text-xs text-[#7a7697]'>Priority: {selectedTicket.priority}</p>
+              {(() => {
+                const relatedProduct = getRelatedProduct(selectedTicket)
+                const relatedOrder = getRelatedOrder(selectedTicket)
+                return (
+                  <>
+                    <p className='text-sm font-bold text-[#28244f]'>{selectedTicket.title}</p>
+                    <p className='mt-2 text-xs text-[#7a7697]'>#{selectedTicket._id.slice(-8).toUpperCase()}</p>
+                    <p className='mt-2 text-xs text-[#7a7697]'>Status: {selectedTicket.status}</p>
+                    <p className='mt-1 text-xs text-[#7a7697]'>Priority: {selectedTicket.priority}</p>
+                    {relatedProduct ? (
+                      <div className='mt-3 rounded-xl border border-[#eceaf8] bg-[#faf9ff] p-3'>
+                        <p className='text-[11px] uppercase tracking-[0.15em] text-[#9b97b9]'>Sản phẩm phản hồi</p>
+                        <p className='mt-1 text-sm font-semibold text-[#2d2950]'>{relatedProduct.name}</p>
+                        <p className='mt-1 text-xs text-[#7a7697]'>ID: {relatedProduct.id}</p>
+                      </div>
+                    ) : null}
+                    {relatedOrder ? (
+                      <div className='mt-3 rounded-xl border border-[#eceaf8] bg-[#faf9ff] p-3'>
+                        <p className='text-[11px] uppercase tracking-[0.15em] text-[#9b97b9]'>Đơn hàng phản hồi</p>
+                        <p className='mt-1 text-sm font-semibold text-[#2d2950]'>
+                          #{relatedOrder.id.slice(-8).toUpperCase()}
+                        </p>
+                        <p className='mt-1 text-xs text-[#7a7697]'>Trạng thái: {relatedOrder.status}</p>
+                      </div>
+                    ) : null}
+                  </>
+                )
+              })()}
             </div>
           ) : null}
 
@@ -158,7 +211,7 @@ export default function FeedbackRepliesPage() {
           <h2 className='text-xl font-bold text-[#212047]'>Reply Timeline</h2>
           <p className='mt-1 text-sm text-[#7a7697]'>{replies.length} message(s)</p>
 
-          <div className='mt-4 max-h-[620px] space-y-3 overflow-auto pr-1'>
+          <div className='mt-4 max-h-155 space-y-3 overflow-auto pr-1'>
             {selectedTicketId ? (
               replies.length > 0 ? (
                 replies.map((reply) => (

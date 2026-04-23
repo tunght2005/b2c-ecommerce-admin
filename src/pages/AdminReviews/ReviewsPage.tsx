@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { MessageSquareText, SlidersHorizontal, Star, X } from 'lucide-react'
+import { MessageSquareText, SendHorizonal, SlidersHorizontal, Star, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 import productApi from '../../apis/product.api'
@@ -25,6 +25,8 @@ export default function ReviewsPage() {
   const [toDate, setToDate] = useState('')
   const [selectedReview, setSelectedReview] = useState<ReviewEntity | null>(null)
   const [deleteReviewId, setDeleteReviewId] = useState<string | null>(null)
+  const [replyReview, setReplyReview] = useState<ReviewEntity | null>(null)
+  const [replyContent, setReplyContent] = useState('')
 
   const productsQuery = useQuery({
     queryKey: ['review-products'],
@@ -67,6 +69,21 @@ export default function ReviewsPage() {
     },
     onError: () => {
       toast.error('Không thể xóa review')
+    }
+  })
+
+  const replyReviewMutation = useMutation({
+    mutationFn: ({ id, content }: { id: string; content: string }) => reviewApi.replyByAdmin(id, { content }),
+    onSuccess: (response) => {
+      toast.success(response.data.message || 'Đã gửi phản hồi')
+      queryClient.invalidateQueries({ queryKey: ['reviews-admin'] })
+      queryClient.invalidateQueries({ queryKey: ['reviews-by-product'] })
+      queryClient.invalidateQueries({ queryKey: ['review-summary-by-product'] })
+      setReplyReview(null)
+      setReplyContent('')
+    },
+    onError: () => {
+      toast.error('Không thể gửi phản hồi cho review')
     }
   })
 
@@ -152,6 +169,20 @@ export default function ReviewsPage() {
     if (!deleteReviewId) return
     removeReviewMutation.mutate(deleteReviewId)
     setDeleteReviewId(null)
+  }
+
+  const renderProductName = (review: ReviewEntity) => {
+    if (typeof review.product_id === 'object' && review.product_id) {
+      return review.product_id.name || review.product_id._id
+    }
+    return review.product_id || 'N/A'
+  }
+
+  const renderProductId = (review: ReviewEntity) => {
+    if (typeof review.product_id === 'object' && review.product_id) {
+      return review.product_id._id
+    }
+    return review.product_id || 'N/A'
   }
 
   return (
@@ -289,12 +320,32 @@ export default function ReviewsPage() {
                     </span>
                   </div>
                   <p className='mt-2 text-sm text-[#5f5a7a] dark:text-slate-300'>{review.content}</p>
+                  <p className='mt-2 text-xs text-[#6f62cf] dark:text-indigo-300'>
+                    Sản phẩm: {renderProductName(review)}
+                  </p>
+                  {review.admin_reply?.content ? (
+                    <div className='mt-2 rounded-xl border border-[#d8edff] bg-[#eff8ff] px-3 py-2 text-xs text-[#2f78d1] dark:border-indigo-500/40 dark:bg-indigo-950/30 dark:text-indigo-200'>
+                      <p className='font-semibold'>Phản hồi Admin/Support</p>
+                      <p className='mt-1 whitespace-pre-line'>{review.admin_reply.content}</p>
+                    </div>
+                  ) : null}
                   <p className='mt-2 text-xs text-[#8f8aac] dark:text-slate-400'>{formatDateTime(review.createdAt)}</p>
                   <div className='mt-2'>
                     <CrudActionButtons
                       onView={() => setSelectedReview(review)}
                       onDelete={() => setDeleteReviewId(review._id)}
                     />
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setReplyReview(review)
+                        setReplyContent(review.admin_reply?.content || '')
+                      }}
+                      className='mt-2 inline-flex h-8 items-center gap-2 rounded-full border border-[#d8edff] bg-[#eff8ff] px-3 text-xs font-semibold text-[#2f78d1] transition hover:bg-[#e2f2ff] dark:border-indigo-500/40 dark:bg-indigo-950/30 dark:text-indigo-200 dark:hover:bg-indigo-950/45'
+                    >
+                      <SendHorizonal className='h-3.5 w-3.5' />
+                      {review.admin_reply?.content ? 'Sửa phản hồi' : 'Phản hồi review'}
+                    </button>
                   </div>
                 </div>
               ))
@@ -338,7 +389,78 @@ export default function ReviewsPage() {
               <p className='rounded-xl bg-[#faf9ff] p-3 text-sm text-[#2a254b] dark:bg-slate-950/70 dark:text-slate-100'>
                 {selectedReview.content}
               </p>
+              <p className='text-sm text-[#5f5a7a] dark:text-slate-300'>Sản phẩm:</p>
+              <p className='rounded-xl bg-[#faf9ff] p-3 text-sm text-[#2a254b] dark:bg-slate-950/70 dark:text-slate-100'>
+                {renderProductName(selectedReview)}
+              </p>
+              <p className='text-sm text-[#5f5a7a] dark:text-slate-300'>Product ID:</p>
+              <p className='rounded-xl bg-[#faf9ff] p-3 text-sm text-[#2a254b] dark:bg-slate-950/70 dark:text-slate-100'>
+                {renderProductId(selectedReview)}
+              </p>
+              {selectedReview.admin_reply?.content ? (
+                <>
+                  <p className='text-sm text-[#5f5a7a] dark:text-slate-300'>Phản hồi Admin/Support:</p>
+                  <p className='rounded-xl border border-[#d8edff] bg-[#eff8ff] p-3 text-sm text-[#2f78d1] dark:border-indigo-500/40 dark:bg-indigo-950/30 dark:text-indigo-200'>
+                    {selectedReview.admin_reply.content}
+                  </p>
+                </>
+              ) : null}
               <p className='text-xs text-[#8f8aac] dark:text-slate-400'>{formatDateTime(selectedReview.createdAt)}</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {replyReview ? (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-[#1f1b3f]/35 px-4'>
+          <div className='w-full max-w-xl rounded-3xl border border-[#eceaf8] bg-white p-6 shadow-[0_24px_64px_rgba(20,17,48,0.25)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_24px_64px_rgba(0,0,0,0.35)]'>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-xl font-bold text-[#212047] dark:text-slate-100'>Phản hồi review</h2>
+              <button
+                type='button'
+                onClick={() => {
+                  setReplyReview(null)
+                  setReplyContent('')
+                }}
+                className='inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#eceaf8] text-[#6d688a] transition hover:border-[#d4cfea] hover:text-[#5f54bf] dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100'
+              >
+                <X className='h-4 w-4' />
+              </button>
+            </div>
+
+            <p className='text-sm text-[#5f5a7a] dark:text-slate-300'>Sản phẩm: {renderProductName(replyReview)}</p>
+            <p className='mt-1 text-sm text-[#5f5a7a] dark:text-slate-300'>Review: {replyReview.content}</p>
+
+            <label className='mt-4 block'>
+              <span className='text-sm font-semibold text-[#4a4666] dark:text-slate-300'>Nội dung phản hồi</span>
+              <textarea
+                value={replyContent}
+                onChange={(event) => setReplyContent(event.target.value)}
+                rows={5}
+                placeholder='Nhập phản hồi từ Admin/Support...'
+                className='mt-2 w-full rounded-2xl border border-[#e5e1f3] bg-[#fbfaff] px-4 py-3 text-sm text-[#2d2950] outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100'
+              />
+            </label>
+
+            <div className='mt-5 flex justify-end gap-2'>
+              <button
+                type='button'
+                onClick={() => {
+                  setReplyReview(null)
+                  setReplyContent('')
+                }}
+                className='inline-flex h-10 items-center rounded-full border border-[#e0dcf1] bg-white px-4 text-sm font-semibold text-[#6d688a] transition hover:border-[#bfb5ea] hover:text-[#6f62cf] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100'
+              >
+                Hủy
+              </button>
+              <button
+                type='button'
+                onClick={() => replyReviewMutation.mutate({ id: replyReview._id, content: replyContent })}
+                disabled={!replyContent.trim() || replyReviewMutation.isPending}
+                className='inline-flex h-10 items-center rounded-full bg-[#6f62cf] px-4 text-sm font-semibold text-white transition hover:bg-[#5e53bf] disabled:cursor-not-allowed disabled:opacity-60'
+              >
+                {replyReviewMutation.isPending ? 'Đang gửi...' : 'Gửi phản hồi'}
+              </button>
             </div>
           </div>
         </div>

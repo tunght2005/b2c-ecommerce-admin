@@ -62,6 +62,19 @@ export default function FeedbackRepliesPage() {
 
   const selectedTicket = (ticketsQuery.data ?? []).find((item) => item._id === selectedTicketId) ?? null
 
+  const selectedTicketDetailQuery = useQuery({
+    queryKey: ['feedback-ticket-detail', selectedTicketId],
+    queryFn: async () => {
+      if (!selectedTicketId) return null
+      const response = await feedbackApi.getDetail(selectedTicketId)
+      return response.data.data
+    },
+    enabled: Boolean(selectedTicketId),
+    placeholderData: (previousData) => previousData
+  })
+
+  const ticketContext = selectedTicketDetailQuery.data || selectedTicket
+
   const repliesQuery = useQuery({
     queryKey: ['feedback-replies', selectedTicketId],
     queryFn: async () => {
@@ -141,27 +154,27 @@ export default function FeedbackRepliesPage() {
             ))}
           </select>
 
-          {selectedTicket ? (
+          {ticketContext ? (
             <div className='mt-4 rounded-2xl border border-[#eceaf8] p-4'>
               {(() => {
-                const relatedProduct = getRelatedProduct(selectedTicket)
-                const relatedOrder = getRelatedOrder(selectedTicket)
+                const relatedProduct = getRelatedProduct(ticketContext)
+                const relatedOrder = getRelatedOrder(ticketContext)
                 return (
                   <>
-                    <p className='text-sm font-bold text-[#28244f]'>{selectedTicket.title}</p>
-                    <p className='mt-2 text-xs text-[#7a7697]'>#{selectedTicket._id.slice(-8).toUpperCase()}</p>
-                    <p className='mt-2 text-xs text-[#7a7697]'>Status: {selectedTicket.status}</p>
-                    <p className='mt-1 text-xs text-[#7a7697]'>Priority: {selectedTicket.priority}</p>
+                    <p className='text-sm font-bold text-[#28244f]'>{ticketContext.title}</p>
+                    <p className='mt-2 text-xs text-[#7a7697]'>#{ticketContext._id.slice(-8).toUpperCase()}</p>
+                    <p className='mt-2 text-xs text-[#7a7697]'>Status: {ticketContext.status}</p>
+                    <p className='mt-1 text-xs text-[#7a7697]'>Priority: {ticketContext.priority}</p>
                     {relatedProduct ? (
                       <div className='mt-3 rounded-xl border border-[#eceaf8] bg-[#faf9ff] p-3'>
-                        <p className='text-[11px] uppercase tracking-[0.15em] text-[#9b97b9]'>Sản phẩm phản hồi</p>
+                        <p className='text-[11px] uppercase tracking-[0.15em] text-[#9b97b9]'>Sản phẩm đang phản hồi</p>
                         <p className='mt-1 text-sm font-semibold text-[#2d2950]'>{relatedProduct.name}</p>
                         <p className='mt-1 text-xs text-[#7a7697]'>ID: {relatedProduct.id}</p>
                       </div>
                     ) : null}
                     {relatedOrder ? (
                       <div className='mt-3 rounded-xl border border-[#eceaf8] bg-[#faf9ff] p-3'>
-                        <p className='text-[11px] uppercase tracking-[0.15em] text-[#9b97b9]'>Đơn hàng phản hồi</p>
+                        <p className='text-[11px] uppercase tracking-[0.15em] text-[#9b97b9]'>Đơn hàng đang phản hồi</p>
                         <p className='mt-1 text-sm font-semibold text-[#2d2950]'>
                           #{relatedOrder.id.slice(-8).toUpperCase()}
                         </p>

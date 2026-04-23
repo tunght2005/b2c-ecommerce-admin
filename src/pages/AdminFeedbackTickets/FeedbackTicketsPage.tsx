@@ -256,11 +256,12 @@ export default function FeedbackTicketsPage() {
 
         <div className='mt-5 overflow-hidden rounded-[26px] border border-[#eceaf8]'>
           <div className='overflow-x-auto'>
-            <table className='min-w-[960px] divide-y divide-[#eceaf8] md:min-w-full'>
+            <table className='min-w-240 divide-y divide-[#eceaf8] md:min-w-full'>
               <thead className='bg-[#faf9ff] text-left text-xs font-bold uppercase tracking-[0.18em] text-[#7f7a9e]'>
                 <tr>
                   <th className='px-4 py-4'>Ticket</th>
                   <th className='px-4 py-4'>Reporter</th>
+                  <th className='px-4 py-4'>Liên quan</th>
                   <th className='px-4 py-4'>Status</th>
                   <th className='px-4 py-4'>Priority</th>
                   <th className='px-4 py-4'>Created</th>
@@ -270,13 +271,15 @@ export default function FeedbackTicketsPage() {
               <tbody className='divide-y divide-[#f0edf8] bg-white'>
                 {ticketsQuery.isLoading && !ticketsQuery.data ? (
                   <tr>
-                    <td colSpan={6} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={7} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
                       Loading feedback tickets...
                     </td>
                   </tr>
                 ) : paginatedTickets.length > 0 ? (
                   paginatedTickets.map((ticket) => {
                     const reporter = getReporter(ticket)
+                    const relatedProduct = getProductInfo(ticket)
+                    const relatedOrder = getOrderInfo(ticket)
                     return (
                       <tr key={ticket._id} className='transition hover:bg-[#fbfaff]'>
                         <td className='px-4 py-4'>
@@ -286,6 +289,15 @@ export default function FeedbackTicketsPage() {
                         <td className='px-4 py-4'>
                           <p className='text-sm font-semibold text-[#2d2950]'>{reporter.name}</p>
                           <p className='text-xs text-[#8f8aac]'>{reporter.email}</p>
+                        </td>
+                        <td className='px-4 py-4'>
+                          <div className='space-y-1 text-xs'>
+                            {ticket.product_id ? <p className='text-[#2f78d1]'>SP: {relatedProduct.name}</p> : null}
+                            {ticket.order_id ? (
+                              <p className='text-[#7a7697]'>ĐH: #{String(relatedOrder.id).slice(-8).toUpperCase()}</p>
+                            ) : null}
+                            {!ticket.product_id && !ticket.order_id ? <p className='text-[#9b97b9]'>N/A</p> : null}
+                          </div>
                         </td>
                         <td className='px-4 py-4 text-sm font-semibold text-[#4c4871]'>{ticket.status}</td>
                         <td className='px-4 py-4 text-sm font-semibold text-[#4c4871]'>{ticket.priority}</td>
@@ -311,7 +323,7 @@ export default function FeedbackTicketsPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={6} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
+                    <td colSpan={7} className='px-4 py-16 text-center text-sm text-[#7a7697]'>
                       No feedback tickets found.
                     </td>
                   </tr>
